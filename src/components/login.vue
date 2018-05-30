@@ -11,7 +11,7 @@
         账号：
       </div>
       <div class="d-flex align-items-center">
-        <input class="input-cl" />
+        <input class="input-cl" v-model="formData.account"/>
       </div>
     </div>
 
@@ -20,7 +20,7 @@
         密码：
       </div>
       <div class="d-flex align-items-center">
-        <input class="input-cl" />
+        <input class="input-cl" v-model="formData.password"/>
       </div>
     </div>
 
@@ -31,22 +31,42 @@
     </div>
 
     <div class="d-flex justify-content-center mar4">
-      <button class="login-btn"></button>
+      <button class="login-btn" @click="login"></button>
     </div>
     <!--<img src="../assets/bg.jpg" style="position:fixed;top: 0px;left: 0px;height: 100%;width: 100%;z-index: 1" />-->
-
   </div>
 
 </template>
 
 <script>
-export default {
-  name: 'login',
-  data () {
-    return {
-    }
+  import {myTools} from '../tools/myTools.js'
+  import qs from 'qs'
+
+  export default {
+    name: 'login',
+    data () {
+      return {
+        formData: {
+          account: '',
+          password: '',
+        },
+      }
+    },
+
+    methods: {
+      login: function () {
+
+        myTools.axiosInstance.post('/login', qs.stringify(this.formData))
+          .then(function (response) {
+            if (response.status === 200) {
+              window.location.href = '/#/main';   //登录成功，跳转首页
+            } else {
+              toastr.message('登陆失败', 'error')
+            }
+          })
+      },
+    },
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
