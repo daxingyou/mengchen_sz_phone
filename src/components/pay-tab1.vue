@@ -9,21 +9,20 @@
             </div>
         </div>
         <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between">
-            <div class="fangka active d-flex justify-content-center align-items-center">
-                <div class="fangka-str">100张</div>
-                <div class="fangka-des"></div>
+            <div v-on:click="sel(100)" :class=selAct(100)>
+                <div style="margin-top: 1rem" class="fangka-str">100张</div>
             </div>
-            <div style="margin-left: 10px;" class="fangka">
+            <div v-on:click="sel(300)" style="margin-left: 10px;" :class=selAct(300)>
                 <div class="fangka-str">300张</div>
                 <div class="fangka-des">额外赠送<span>200</span>张</div>
             </div>
         </div>
         <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between">
-            <div class="fangka">
+            <div v-on:click="sel(1000)" :class=selAct(1000)>
                 <div class="fangka-str">1000张</div>
                 <div class="fangka-des">额外赠送<span>200</span>张</div>
             </div>
-            <div style="margin-left: 10px;" class="fangka">
+            <div v-on:click="sel(2000)" style="margin-left: 10px;" :class=selAct(2000)>
                 <div class="fangka-str">2000张</div>
                 <div class="fangka-des">额外赠送<span>500</span>张</div>
             </div>
@@ -41,18 +40,18 @@
             </div>
         </div>
         <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between">
-            <div class="fangka active d-flex justify-content-center align-items-center">
+            <div v-on:click="selPayType('wechat')" :class="selPayTypeCss('wechat')" >
                 <div><img height="28px" src="../assets/icon_wechat.png"/></div>
                 <div class="pay-str">微信支付</div>
             </div>
-            <div style="margin-left: 10px;" class="fangka d-flex justify-content-center align-items-center">
+            <div v-on:click="selPayType('cash')" style="margin-left: 10px;" :class="selPayTypeCss('cash')" >
                 <div><img height="28px" src="../assets/icon_money.png"/></div>
                 <div class="pay-str">返现金支付</div>
             </div>
         </div>
         <div style="margin-top: 2rem;margin:0 auto">
             <div class="pay-have-pay">应付金额</div>
-            <div class="pay-real-pay">240元</div>
+            <div class="pay-real-pay">{{pay_money}}元</div>
             <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交订单</span></div>
         </div>
     </div>
@@ -63,7 +62,31 @@ export default {
 //  name: 'pay',
   data () {
     return {
+        pay_money:0,
+        pay_type:'wechat',
     }
+  },
+  methods:{
+      sel(money){
+          this.pay_money = money;
+      },
+      selAct(sel){
+          if(sel == this.pay_money){
+              return 'fangka active'
+          }else{
+              return 'fangka'
+          }
+      },
+      selPayType(pay_type){
+          this.pay_type = pay_type
+      },
+      selPayTypeCss(pay_type){
+          if(this.pay_type == pay_type){
+              return 'fangka active d-flex justify-content-center align-items-center'
+          }else{
+              return 'fangka d-flex justify-content-center align-items-center'
+          }
+      }
   }
 }
 </script>

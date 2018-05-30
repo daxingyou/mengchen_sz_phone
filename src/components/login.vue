@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div style="width: 100%;height: 100%;margin-top: 8rem;">
+    <div style="width: 100%;margin-top: 8rem;">
       <img class="logo"  src="../assets/login_logo.png"/>
     </div>
     <div class="sys-name">
@@ -84,6 +84,7 @@ input{
   background-repeat: no-repeat;
   background-size: 100% 100%;
   -moz-background-size:100% 100%;
+  height: 100%;
   /*z-index: 1;*/
 }
 .logo{

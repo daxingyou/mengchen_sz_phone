@@ -2,7 +2,7 @@
     <div>
         <div style="margin-top: 0.5rem">
             <div>
-                <select class="m-input">
+                <select v-model="formData.player_id" v-on:change="" class="m-input">
                     <option value="1">1</option>
                     <option value="2">2</option>
                 </select>
@@ -60,8 +60,40 @@ export default {
   name: 'pay',
   data () {
     return {
+        formData: {
+            player_id: ''
+        },
+        tableData:[]
     }
-  }
+  },
+    methods:{
+        pay: function () {
+            myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
+                .then(function (response) {
+                    if (response.status === 200) {
+                        window.location.href = '/#/main'   //登录成功，跳转首页
+                    } else {
+                        alert('帐号密码错误')
+                    }
+                })
+                .catch(function (err) {
+                    alert(err)
+                })
+        },
+        record: function () {
+            myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
+                .then(function (response) {
+                    if (response.status === 200) {
+                        window.location.href = '/#/main'   //登录成功，跳转首页
+                    } else {
+                        alert('帐号密码错误')
+                    }
+                })
+                .catch(function (err) {
+                    alert(err)
+                })
+        }
+    }
 }
 </script>
 

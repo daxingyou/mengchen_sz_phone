@@ -12,6 +12,7 @@ export default {
 
 <style>
 html,body {
+  margin:0px;
   height: 100%;
   background-color: #d8d4bb;
 }
@@ -20,5 +21,6 @@ html,body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  height: 100%;
 }
 </style>

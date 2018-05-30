@@ -15,7 +15,7 @@
             </div>
 
             <div>
-                <input class="m-input"/>
+                <input v-model="formData.player_id" class="m-input"/>
             </div>
         </div>
         <div style="margin-top: 1rem">
@@ -24,10 +24,10 @@
             </div>
 
             <div>
-                <input class="m-input"/>
+                <input v-model="formData.pay_num" class="m-input"/>
             </div>
 
-            <div style="margin-top: 2.5rem;">
+            <div v-on:click="pay()" style="margin-top: 2.5rem;">
                 <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交订单</span></div>
             </div>
         </div>
@@ -40,7 +40,26 @@ export default {
 //  name: 'pay',
   data () {
     return {
+        formData:{
+            player_id:'',
+            pay_num:''
+        }
     }
+  },
+  methods:{
+      pay: function () {
+          myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
+          .then(function (response) {
+              if (response.status === 200) {
+                  window.location.href = '/#/main'   //登录成功，跳转首页
+              } else {
+                  alert('帐号密码错误')
+              }
+          })
+          .catch(function (err) {
+              alert(err)
+          })
+      }
   }
 }
 </script>
