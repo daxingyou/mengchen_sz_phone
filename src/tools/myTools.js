@@ -9,9 +9,9 @@ let myTools = {
     timeout: 10000,                          //超时时间
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
-    validateStatus: function (status) {
-      return status === 200 || status === 422
-    },
+    // validateStatus: function (status) {
+    //   return status === 200 || status === 422 || status === 423
+    // },
     withCredentials: true,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

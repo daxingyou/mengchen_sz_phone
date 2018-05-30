@@ -58,11 +58,10 @@
 
         myTools.axiosInstance.post('/login', qs.stringify(this.formData))
           .then(function (response) {
-            if (response.status === 200) {
-              window.location.href = '/#/main';   //登录成功，跳转首页
-            } else {
-              toastr.message('登陆失败', 'error')
-            }
+            window.location.href = '/#/main'   //登录成功，跳转首页
+          })
+          .catch(function (err) {
+            alert('帐号密码错误')
           })
       },
     },
