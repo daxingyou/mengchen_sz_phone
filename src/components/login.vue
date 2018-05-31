@@ -57,7 +57,7 @@
       login: function () {
         myTools.axiosInstance.post('/login', qs.stringify(this.formData))
           .then(function (response) {
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 302) {
               window.location.href = '/#/main'   //登录成功，跳转首页
             } else {
               alert('帐号密码错误')

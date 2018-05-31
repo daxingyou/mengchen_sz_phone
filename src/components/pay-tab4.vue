@@ -2,9 +2,10 @@
     <div>
         <div style="margin-top: 0.5rem">
             <div>
-                <select v-model="formData.player_id" v-on:change="" class="m-input">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
+                <select v-model="orderType" v-on:change="" class="m-input">
+                    <option :value="orderType" selected>{{orderType}}</option>
+                    <!--<option value="2">2</option>-->
+                    <!--todo 这里不同的不同的订单（微信，玩家充值等）接口返回字段是不一样的，下面tbody得同步修改（暂不处理）-->
                 </select>
             </div>
         </div>
@@ -35,18 +36,15 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>2000张
-                            赠送500张</td>
-                        <td>未支付</td>
-                        <td>未发货</td>
-                        <td>2018-04-23
-                            23:22:22</td>
-                        <td>2018-04-23
-                            23:22:22</td>
-                        <td class="caozuo">支付</td>
+                <tbody v-if="loading === false">
+                    <tr v-for="tableData in tableDatas">
+                        <td>{{tableData.id}}</td>
+                        <td>{{tableData.body}}</td>
+                        <td>{{tableData.order_status_name}}</td>
+                        <td>{{tableData.item_delivery_status_name}}</td>
+                        <td>{{tableData.created_at}}</td>
+                        <td>{{tableData.paid_at}}</td>
+                        <td class="caozuo" @click="pay(tableData.id)">支付</td>
                     </tr>
                 </tbody>
             </table>
@@ -56,44 +54,42 @@
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
+
 export default {
   name: 'pay',
   data () {
     return {
-        formData: {
-            player_id: ''
-        },
-        tableData:[]
+        orderType: '微信订单',
+        tableDatas:[],
+        loading: true,
+      wxOrdersApi: '/api/wechat/order/agent',
+      wxOrder: {},  //点击了支付之后的订单详情对象
     }
   },
     methods:{
-        pay: function () {
-            myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
-                .then(function (response) {
-                    if (response.status === 200) {
-                        window.location.href = '/#/main'   //登录成功，跳转首页
-                    } else {
-                        alert('帐号密码错误')
-                    }
-                })
-                .catch(function (err) {
-                    alert(err)
-                })
+        pay: function (id) {
+          let _self = this
+
+          //请求单个订单数据（含有支付二维码）
+          myTools.axiosInstance.get(this.wxOrdersApi + '/' + id)
+            .then(function (res) {
+              _self.wxOrder = res.data
+              console.log('todo, 弹出支付二维码')
+              //todo 弹出支付二维码弹窗
+              //返回的数据字段order_qr_code的值为base64之后的图片字符串
+            })
         },
-        record: function () {
-            myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
-                .then(function (response) {
-                    if (response.status === 200) {
-                        window.location.href = '/#/main'   //登录成功，跳转首页
-                    } else {
-                        alert('帐号密码错误')
-                    }
-                })
-                .catch(function (err) {
-                    alert(err)
-                })
-        }
-    }
+    },
+    created () {
+      let _self = this
+
+      myTools.axiosInstance.get(this.wxOrdersApi)
+        .then(function (res) {
+          _self.tableDatas = res.data.data   //分页数据
+          _self.loading = false
+        })
+    },
 }
 </script>
 

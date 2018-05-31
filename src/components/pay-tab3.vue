@@ -11,13 +11,13 @@
         <div style="margin-top: 1rem">
             <div style="margin-left: 1rem;margin-right: 1rem" class="d-flex justify-content-between">
                 <div class="user-font">选择牌艺馆</div>
-                <div class="user-font">牌艺馆房卡余量：<span class="user-fangka">100</span></div>
+                <div class="user-font">牌艺馆房卡余量：<span class="user-fangka">{{communityBalance}}</span></div>
             </div>
 
-            <div>
-                <select v-model="formData.card_num" class="m-input">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
+            <div v-if="loading === false">
+                <select v-model="formData.community_id" class="m-input" v-on:change="searchCommunityBalance">
+                    <option :value="communityId" v-for="communityId in communityIds"
+                        >{{communityId}}</option>
                 </select>
             </div>
         </div>
@@ -27,7 +27,7 @@
             </div>
 
             <div>
-                <input v-model="formData.pay_num" class="m-input"/>
+                <input v-model="formData.item_amount" class="m-input"/>
             </div>
 
             <div v-on:click="pay()" style="margin-top: 2.5rem;">
@@ -39,30 +39,60 @@
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
+    import qs from 'qs'
+
     export default {
         data () {
             return {
-                formData: {
-                    card_num: '',
-                    pay_num: '',
-                },
+              formData: {
+                item_type_id: 1,    //房卡道具类型id
+                community_id: '',
+                item_amount: '',
+              },
+
+              loading: true,
+              communityIds: [],
+              topUpApi: '/agent/api/community/card/top-up',
+              communitiesApi: '/agent/api/communities',  //获取此代理商的所有牌艺馆
+              communityInfoApiPrefix: '/agent/api/community/info/',
+              communityBalance: 0,
             }
         },
         methods:{
             pay: function () {
-                myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
-                    .then(function (response) {
-                        if (response.status === 200) {
-                            window.location.href = '/#/main'   //登录成功，跳转首页
-                        } else {
-                            alert('帐号密码错误')
-                        }
-                    })
-                    .catch(function (err) {
-                        alert(err)
-                    })
-            }
-        }
+              let _self = this
+
+              if (this.formData.item_amount <= 0) {
+                return alert('数量错误')
+              }
+
+              myTools.axiosInstance.post(this.topUpApi, qs.stringify(this.formData))
+                .then(function (res) {
+                  let msg = res.data.error ? res.data.error : res.data.message
+                  _self.formData.item_amount = 0
+                  return alert(msg)
+                })
+            },
+
+          searchCommunityBalance () {
+            let _self = this
+
+            myTools.axiosInstance.get(this.communityInfoApiPrefix + this.formData.community_id)
+              .then(function (res) {
+                _self.communityBalance = res.data.card_stock
+              })
+          },
+        },
+      created () {
+        let _self = this
+
+        myTools.axiosInstance.get(this.communitiesApi)
+        .then(function (res) {
+          _self.communityIds = res.data.community_ids
+          _self.loading = false
+        })
+      },
     }
 </script>
 
