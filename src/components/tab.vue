@@ -43,7 +43,6 @@
 
 <script>
 export default {
-  name: 'main',
   data () {
     return {
       tab1: 'nav-item nav-link active',

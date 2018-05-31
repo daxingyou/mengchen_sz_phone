@@ -62,7 +62,6 @@
     import qs from 'qs'
 
 export default {
-//  name: 'pay',
   data () {
     return {
       pay_money:0,
