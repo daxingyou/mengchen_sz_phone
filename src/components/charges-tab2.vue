@@ -2,8 +2,8 @@
     <div >
         <div>
             <select class="m-sel">
-                <option value="1">1</option>
-                <option value="2">2</option>
+                <!--todo 这里是一个日期选择器，选择之后自动查询此时间的提现申请列表-->
+                <option value="2018-05-01">2018-05-01</option>
             </select>
         </div>
 
@@ -28,16 +28,15 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2000张
-                        赠送500张</td>
-                    <td>未支付</td>
-                    <td>未发货</td>
-                    <td>2018-04-23
-                        23:22:22</td>
+                <tbody v-if="loading === false">
+                <tr v-for="tableData in tableDatas">
+                    <td>{{tableData.id}}</td>
+                    <td>{{tableData.amount}}</td>
+                    <td>{{tableData.created_at}}</td>
+                    <td>{{tableData.withdrawal_status}}</td>
+                    <td>{{tableData.remark}}</td>
                 </tr>
+                <!--todo 这里需要分页-->
                 </tbody>
             </table>
         </div>
@@ -52,26 +51,26 @@
 
                 <div class="normal">联系方式类型</div>
                 <div>
-                    <select class="m-sel">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                    <select class="m-sel" v-model="withdrawFormData.contact_type">
+                        <option value="0">微信</option>
+                        <option value="1">电话</option>
                     </select>
                 </div>
 
 
                 <div class="normal">联系方式</div>
                 <div>
-                    <input class="m-input"/>
+                    <input class="m-input" v-model="withdrawFormData.contact"/>
                 </div>
 
 
                 <div class="normal">提现金额（元）</div>
-                <div>
-                    <select class="m-sel">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                <div v-if="loading === false">
+                    <select class="m-sel" v-model="withdrawFormData.amount">
+                        <option :value="withdrawLimit" v-for="withdrawLimit in withdrawLimits">{{ withdrawLimit }}</option>
                     </select>
                 </div>
+                <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn" @click="applyWithdraw"><span>提交申请</span></div>
 
             </div>
 
@@ -84,13 +83,25 @@
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
+    import qs from 'qs'
+
 export default {
   data () {
     return {
-        charges_show:false
+      charges_show:false,
+
+      withdrawFormData: {
+        amount: 500,
+        contact: '',
+        contact_type: 0,
+      },
+      loading: true,
+      withdrawListApi: '/agent/api/withdrawals',
+      withdrawLimitApi: '/agent/api/withdrawals/amount-limit',  //提现金额限制api
+      tableDatas: [],
+      withdrawLimits: [],   //提现金额限制
     }
-  },
-  created: function () {
   },
     methods: {
         showDia(){
@@ -99,8 +110,32 @@ export default {
             }else{
                 this.charges_show = true
             }
-        }
-    }
+        },
+
+      applyWithdraw () {
+        myTools.axiosInstance.post(this.withdrawListApi, qs.stringify(this.withdrawFormData))
+          .then(function (res) {
+            if (res.status === 422) {
+              return alert(JSON.stringify(res.data))
+            }
+            return res.data.error ? alert(res.data.error) : alert(res.data.message)
+          })
+      },
+    },
+  created () {
+    let _self = this
+
+    myTools.axiosInstance.get(this.withdrawListApi)
+      .then(function (res) {
+        _self.tableDatas = res.data.data   //分页数据
+      })
+
+    myTools.axiosInstance.get(this.withdrawLimitApi)
+      .then(function (res) {
+        _self.withdrawLimits = res.data
+        _self.loading = false
+      })
+  },
 }
 </script>
 
