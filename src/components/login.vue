@@ -55,7 +55,6 @@
 
     methods: {
       login: function () {
-
         myTools.axiosInstance.post('/login', qs.stringify(this.formData))
           .then(function (response) {
             if (response.status === 200) {

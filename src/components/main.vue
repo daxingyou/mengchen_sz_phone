@@ -4,15 +4,15 @@
     <div class="d-flex justify-content-around bg">
       <div class="d-flex align-items-center">
         <div>
-          <div class="d-flex justify-content-start"><span class="player-str">账号：</span><span class="player-value">aaa</span></div>
-          <div class="d-flex justify-content-start"><span class="player-str">级别：</span><span class="player-value">11</span></div>
+          <div class="d-flex justify-content-start"><span class="player-str">账号：</span><span class="player-value">{{ currentAgentInfo ? currentAgentInfo.account : null}}</span></div>
+          <div class="d-flex justify-content-start"><span class="player-str">级别：</span><span class="player-value">{{ currentAgentInfo ? currentAgentInfo.group.name : null }}</span></div>
         </div>
       </div>
 
       <div class="d-flex align-items-center">
         <div>
-          <div class="d-flex justify-content-start"><span class="player-str">上级代理：</span><span class="player-value">dd</span></div>
-          <div class="d-flex justify-content-start"><span class="player-str">房卡库存：</span><span class="player-value">9999</span></div>
+          <div class="d-flex justify-content-start"><span class="player-str">上级代理：</span><span class="player-value">{{ currentAgentInfo ? currentAgentInfo.parent.name : null}}</span></div>
+          <div class="d-flex justify-content-start"><span class="player-str">房卡库存：</span><span class="player-value">{{ inventoryCard }}</span></div>
         </div>
       </div>
 
@@ -29,6 +29,7 @@
 
 <script>
 import tab from '@/components/tab'
+import {myTools} from '../tools/myTools.js'
 
 export default {
 //  name: 'main',
@@ -37,8 +38,34 @@ export default {
   },
   data () {
     return {
+      agentInfoApi: '/api/info',
+      currentAgentInfo: null,
+      inventoryCard: 0,
     }
-  }
+  },
+  created: function () {
+    let _self = this
+
+    myTools.axiosInstance.get(this.agentInfoApi)
+      .then(function (res) {
+        _self.currentAgentInfo = res.data
+
+        if (_self.currentAgentInfo.inventorys.length > 0) {
+          for (let inventory of _self.currentAgentInfo.inventorys) {
+            switch (inventory.item.name) {
+              case '房卡':
+                _self.inventoryCard = inventory.stock
+                break
+              case '金币':
+                _self.inventoryPoint = inventory.stock
+                break
+              default:
+                break
+            }
+          }
+        }
+      })
+  },
 }
 </script>
 
