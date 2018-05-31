@@ -8,23 +8,23 @@
                 <span style="text-align: center">购买房卡</span>
             </div>
         </div>
-        <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between">
-            <div v-on:click="sel(100)" :class=selAct(100)>
-                <div style="margin-top: 1rem" class="fangka-str">100张</div>
+        <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between"  v-if="loading === false">
+            <div v-on:click="sel(wxTopUpRuleData[0].id, wxTopUpRuleData[0].price_yuan)" :class=selAct(wxTopUpRuleData[0].price_yuan)>
+                <div style="margin-top: 1rem" class="fangka-str">{{ wxTopUpRuleData[0].remark }}</div>
             </div>
-            <div v-on:click="sel(300)" style="margin-left: 10px;" :class=selAct(300)>
-                <div class="fangka-str">300张</div>
-                <div class="fangka-des">额外赠送<span>200</span>张</div>
+            <div v-on:click="sel(wxTopUpRuleData[1].id, wxTopUpRuleData[1].price_yuan)" style="margin-left: 10px;" :class=selAct(wxTopUpRuleData[1].price_yuan)>
+                <div class="fangka-str">{{ wxTopUpRuleData[1].remark.split('+')[0] }}</div>
+                <div class="fangka-des">额外赠送<span>{{ wxTopUpRuleData[1].give }}</span>张</div>
             </div>
         </div>
-        <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between">
-            <div v-on:click="sel(1000)" :class=selAct(1000)>
-                <div class="fangka-str">1000张</div>
-                <div class="fangka-des">额外赠送<span>200</span>张</div>
+        <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between" v-if="loading === false">
+            <div v-on:click="sel(wxTopUpRuleData[2].id, wxTopUpRuleData[2].price_yuan)" :class=selAct(wxTopUpRuleData[2].price_yuan)>
+                <div class="fangka-str">{{ wxTopUpRuleData[2].remark.split('+')[0] }}</div>
+                <div class="fangka-des">额外赠送<span>{{ wxTopUpRuleData[2].give }}</span>张</div>
             </div>
-            <div v-on:click="sel(2000)" style="margin-left: 10px;" :class=selAct(2000)>
-                <div class="fangka-str">2000张</div>
-                <div class="fangka-des">额外赠送<span>500</span>张</div>
+            <div v-on:click="sel(wxTopUpRuleData[3].id, wxTopUpRuleData[3].price_yuan)" style="margin-left: 10px;" :class=selAct(wxTopUpRuleData[3].price_yuan)>
+                <div class="fangka-str">{{ wxTopUpRuleData[3].remark.split('+')[0] }}</div>
+                <div class="fangka-des">额外赠送<span>{{ wxTopUpRuleData[3].give }}</span>张</div>
             </div>
         </div>
         <div class="fangka-ps">
@@ -52,22 +52,32 @@
         <div style="margin-top: 2rem;margin:0 auto">
             <div class="pay-have-pay">应付金额</div>
             <div class="pay-real-pay">{{pay_money}}元</div>
-            <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交订单</span></div>
+            <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn" @click="createWxOrder"><span>提交订单</span></div>
         </div>
     </div>
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
+    import qs from 'qs'
+
 export default {
   data () {
     return {
-        pay_money:0,
-        pay_type:'wechat',
+      pay_money:0,
+      pay_type:'wechat',
+
+      wxOrderNum: null, //创建订单wx订单规则id号
+      loading: true,
+      wxTopUpRuleData: [],
+      wxTopUpRuleApi: '/agent/api/wx-top-up-rules',
+      orderCreationApi: '/api/wechat/order',
     }
   },
   methods:{
-      sel(money){
-          this.pay_money = money;
+      sel(orderId, money){
+        this.wxOrderNum = orderId
+        this.pay_money = money;
       },
       selAct(sel){
           if(sel == this.pay_money){
@@ -85,8 +95,33 @@ export default {
           }else{
               return 'fangka d-flex justify-content-center align-items-center'
           }
-      }
-  }
+      },
+      createWxOrder () {
+        if (! this.wxOrderNum) {
+          return alert('请先选择订单')
+        }
+
+        myTools.axiosInstance.post(this.orderCreationApi, qs.stringify({
+          'wx_top_up_rule_id': this.wxOrderNum
+        }))
+          .then(function (res) {
+            //TODO 弹出微信支付二维码
+            console.log('success', res.data)
+          })
+          .catch(function (err) {
+            alert(err)
+          })
+      },
+  },
+  created () {
+    let _self = this
+
+    myTools.axiosInstance.get(this.wxTopUpRuleApi)
+      .then(function (res) {
+        _self.wxTopUpRuleData = res.data
+        _self.loading = false
+      })
+  },
 }
 </script>
 

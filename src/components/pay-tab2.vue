@@ -10,12 +10,12 @@
         </div>
         <div style="margin-top: 1rem">
             <div style="margin-left: 1rem;margin-right: 1rem" class="d-flex justify-content-between">
-                <div class="user-font">顽家ID</div>
-                <div class="user-font">玩家房卡余量：<span class="user-fangka">100</span></div>
+                <div class="user-font" @input="searchBalance">顽家ID</div>
+                <div class="user-font">玩家房卡余量：<span class="user-fangka">{{ playerBalanceMsg }}</span></div>
             </div>
 
             <div>
-                <input v-model="formData.player_id" class="m-input"/>
+                <input v-model="formData.player_id" class="m-input" @input="searchBalance" />
             </div>
         </div>
         <div style="margin-top: 1rem">
@@ -27,8 +27,8 @@
                 <input v-model="formData.pay_num" class="m-input"/>
             </div>
 
-            <div v-on:click="pay()" style="margin-top: 2.5rem;">
-                <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交订单</span></div>
+            <div style="margin-top: 2.5rem;">
+                <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn" @click="topUpPlayer"><span>提交订单</span></div>
             </div>
         </div>
     </div>
@@ -36,30 +36,63 @@
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
+    import qs from 'qs'
+    import _ from 'lodash'
+
 export default {
 //  name: 'pay',
   data () {
     return {
-        formData:{
-            player_id:'',
-            pay_num:''
-        }
+      formData: {
+        type_id: 1, //道具类型
+        player_id: '',
+        pay_num: '',    //充值数量
+      },
+      playerBalanceMsg: '',
+      searchPlayerApi: '/api/game/player',
+      topUpApiPrefix: '/agent/api/top-up/player',
     }
   },
   methods:{
-      pay: function () {
-          myTools.axiosInstance.post('/xxxx', qs.stringify(this.formData))
-          .then(function (response) {
-              if (response.status === 200) {
-                  window.location.href = '/#/main'   //登录成功，跳转首页
-              } else {
-                  alert('帐号密码错误')
-              }
-          })
-          .catch(function (err) {
-              alert(err)
-          })
+    searchBalance: _.debounce(function () {
+      this.playerBalanceMsg = ''
+      let _self = this
+
+      if (! this.formData.player_id) {
+        return true
       }
+
+      myTools.axiosInstance.get(this.searchPlayerApi, {
+        params: { player_id: _self.formData.player_id },
+      })
+        .then(function (res) {
+          if (res.data.error) {
+            _self.playerBalanceMsg = res.data.error
+          } else {
+            let player = res.data
+            _self.playerBalanceMsg = player.ycoins
+          }
+        })
+    }, 800),
+
+    topUpPlayer () {
+      if (! this.formData.player_id || ! this.formData.pay_num) {
+        return alert('玩家id或充值数量不能为空')
+      }
+      let _self = this
+      let api = `${this.topUpApiPrefix}/${this.formData.player_id}/${this.formData.type_id}/${this.formData.pay_num}`
+
+      myTools.axiosInstance.post(api)
+        .then(function (res) {
+          if (res.data.error) {
+            alert(res.data.error)
+          } else {
+            alert(res.data.message)
+          }
+          _self.formData.pay_num = ''
+        })
+    },
   }
 }
 </script>
