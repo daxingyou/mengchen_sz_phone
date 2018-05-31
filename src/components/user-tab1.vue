@@ -6,9 +6,10 @@
         </div>
 
         <div style="margin-top: 0.5rem">
+            <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded"  ref="loadmore">
             <table width="100%" height="80%" style="background-color: #ffffff;" >
                 <thead style="background-color: #fffffe;">
-                <tr>
+                <tr >
                     <th>
                         ID
                     </th>
@@ -21,26 +22,26 @@
                     <th>
                         房卡
                     </th>
-                    <th>
+                    <!-- <th>
                         充值金额额
-                    </th>
+                    </th> -->
                     <th>
                         操作
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2000张
-                        赠送500张</td>
-                    <td>未支付</td>
-                    <td>未发货</td>
-                    <td>未发货</td>
-                    <td><a v-on:click=showChildDia() href="#">充值</a>&nbsp;&nbsp;<a v-on:click=showChangeDia() href="#">修改</a>&nbsp;&nbsp;<a href="#">删除</a> </td>
+                <tr v-for="info in mTableData">
+                    <td>{{info.id}}</td>
+                    <td>{{info.account}}</td>
+                    <td>{{info.name}}</td>
+                    <td>{{filterInventorys(info.inventorys)}}</td>
+                    <!-- <td>未发货</td> -->
+                    <td><a v-on:click=showChildDia() href="#">充值</a>&nbsp;&nbsp;<a v-on:click=showChangeDia(subagent_id) href="#">修改</a>&nbsp;&nbsp;<a href="#">删除</a> </td>
                 </tr>
                 </tbody>
             </table>
+            </mt-loadmore>
         </div>
 
         <div v-show="user_dia_show_new" class="charges-dialog">
@@ -51,29 +52,30 @@
 
                 <div class="normal">账号</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="createFormData.account" class="m-input"/>
                 </div>
 
                 <div class="normal">密码</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="createFormData.password" class="m-input"/>
                 </div>
 
                 <div class="normal">昵称</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="createFormData.name"  class="m-input"/>
                 </div>
 
                 <div class="normal">代理类型</div>
                 <div>
-                    <select class="m-sel">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                    <select v-model="createFormData.group_id" class="m-sel">
+                        <option value="2">总代</option>
+                        <option value="3">钻石</option>
+                        <option value="4">黄金</option>
                     </select>
                 </div>
 
                 <div style="margin-top: 1rem;">
-                    <div v-on:click=showNewDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
+                    <div v-on:click=create() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
                 </div>
             </div>
 
@@ -89,16 +91,16 @@
 
                 <div class="normal">代理账号</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="payFormData.subagent_account" class="m-input"/>
                 </div>
 
                 <div class="normal">充值房卡数量</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="payFormData.amount" class="m-input"/>
                 </div>
 
                 <div style="margin-top: 1rem;">
-                    <div v-on:click=showChildDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
+                    <div v-on:click=pay() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
                 </div>
             </div>
 
@@ -114,25 +116,25 @@
 
                 <div class="normal">账号</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="changeFormData.account" class="m-input"/>
                 </div>
 
                 <div class="normal">昵称</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="changeFormData.name" class="m-input"/>
                 </div>
 
                 <div class="normal">密码</div>
                 <div>
-                    <input class="m-input"/>
+                    <input v-model="changeFormData.password" class="m-input"/>
                 </div>
 
                 <div style="margin-top: 1rem;">
-                    <div v-on:click=showChangeDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
+                    <div v-on:click=change() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
                 </div>
             </div>
 
-            <div v-on:click=showChangeDia()  class="close">
+            <div v-on:click=showChangeDia(0)  class="close">
                 <img height="20px" src="../assets/btn_close.png"/>
             </div>
         </div>
@@ -143,13 +145,19 @@
 <script>
 import {myTools} from '../tools/myTools.js'
 import qs from 'qs'
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+
+var mTableData = []
 
 export default {
   data () {
     return {
+        allLoaded:false,
         user_dia_show_new:false,
         user_dia_show_child:false,
         user_dia_show_change:false,
+        subagent_id:'',
         createFormData: {
             account: '',
             group_id: '',
@@ -166,14 +174,83 @@ export default {
         },
         payFormData:{
             subagent_account:'',
-            item_type:'',
+            item_type:'1',
             amount:''
-        }
+        },
+        mTableData:mTableData
     }
   },
   created: function () {
+      this.list()
   },
     methods: {
+        list(){
+            myTools.axiosInstance.get('/agent/api/subagent')
+            .then(function (response) {
+                if (response.status === 200) {
+                    var data = response.data.data
+                    mTableData.splice(0,mTableData.length)
+                    for(var i = 0;i<data.length;i++){
+                        mTableData.push(data[i])
+                    }
+                    console.info("this.mTableData")
+                    console.info(mTableData)
+                } else {
+                    alert(JSON.stringify(response.data.data))
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
+        },
+        create() {
+            var _this = this;
+            this.createFormData.password_confirmation = this.createFormData.password
+            console.info(this.createFormData)
+            myTools.axiosInstance.post('/agent/api/subagent', qs.stringify(this.createFormData))
+            .then(function (response) {
+                if (response.status === 200) {
+                    console.info(response)
+                    _this.showNewDia()
+                    _this.list()
+                } else {
+                    alert(JSON.stringify(response.data.data))
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
+        },
+        change() {
+            var _this = this;
+            myTools.axiosInstance.put('/agent/api/subagent/'+ this.subagent_id, qs.stringify(this.changeFormData))
+            .then(function (response) {
+                if (response.status === 200) {
+                    console.info(response)
+                    _this.showChangeDia(0)
+                } else {
+                    alert(JSON.stringify(response.data.data))
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
+        },
+        pay() {
+            var _this = this;
+            myTools.axiosInstance.post('/agent/api/top-up/child/'+this.payFormData.subagent_account+'/'+this.payFormData.item_type+'/'+this.payFormData.amount+'', qs.stringify(this.payFormData))
+            .then(function (response) {
+                if (response.status === 200) {
+                    console.info(response)
+                    _this.showChildDia()
+                } else {
+                    alert(JSON.stringify(response.data.data))
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
+        },
         showNewDia(){
             if(this.user_dia_show_new == true){
                 this.user_dia_show_new = false
@@ -188,51 +265,41 @@ export default {
                 this.user_dia_show_child = true
             }
         },
-        showChangeDia(){
-            if(this.user_dia_show_child == true){
-                this.user_dia_show_child = false
+        showChangeDia(subagent_id){
+            this.subagent_id = subagent_id 
+            if(this.user_dia_show_change == true){
+                this.user_dia_show_change = false
             }else{
-                this.user_dia_show_child = true
+                this.user_dia_show_change = true
             }
         },
-        create() {
-            myTools.axiosInstance.post('/agent/api/subagent', qs.stringify(this.createFormData))
-            .then(function (response) {
-                if (response.status === 200) {
-
-                } else {
-                    
-                }
-            })
-            .catch(function (err) {
-                alert(err)
-            })
+        loadBottom() {
+            console.log('loadBottom')
         },
-        change() {
-            myTools.axiosInstance.post('/agent/api/subagent/'+ 1, qs.stringify(this.changeFormData))
-            .then(function (response) {
-                if (response.status === 200) {
+        handleBottomChange(status) {
+            console.log( "status:" + status)
+            if(status == 'pull'){
 
-                } else {
-                    
-                }
-            })
-            .catch(function (err) {
-                alert(err)
-            })
+            }else if(status == 'drop'){
+
+            }else if(status== 'loading'){
+
+            }else{
+
+            }
         },
-        pay() {
-            myTools.axiosInstance.put('/agent/api/top-up/child/{subagent_account}/{item_type}/{amount}', qs.stringify(this.payFormData))
-            .then(function (response) {
-                if (response.status === 200) {
-
-                } else {
-                    
+        filterInventorys(inventorys){
+            console.info(JSON.stringify(inventorys))
+            var invent = 0
+            if(inventorys.length > 0){
+                for(var i=0;i <= inventorys.length;i++){
+                    if(inventorys[i].item_id == 1){
+                        invent = inventorys[i].stock
+                        break
+                    }
                 }
-            })
-            .catch(function (err) {
-                alert(err)
-            })
+            }
+            return invent
         }
     }
 }

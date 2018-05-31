@@ -32,7 +32,6 @@ import tab from '@/components/tab'
 import {myTools} from '../tools/myTools.js'
 
 export default {
-//  name: 'main',
   components: {
     tab
   },
