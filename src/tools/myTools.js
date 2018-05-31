@@ -3,7 +3,7 @@ import axios from 'axios'
 let myTools = {
   //axios默认实例
   axiosInstance: axios.create({
-    // baseURL: 'http://local.mengchen-sz.cn',
+    //baseURL: 'http://local.mengchen-sz.cn',
     baseURL: 'http://hzhtnew-test.max78.com',
     //baseURL: 'http://hzhtnew.max78.com',
     timeout: 10000,                          //超时时间

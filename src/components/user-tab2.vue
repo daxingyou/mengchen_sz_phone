@@ -165,12 +165,12 @@ export default {
         },
         changePsw() {
             var _this = this;
-            myTools.axiosInstance.put('/agent/api/self/password',qs.stringify(this.changeData))
+            myTools.axiosInstance.post('/agent/api/self/password',qs.stringify(this.changeData))
             .then(function (response) {
-                if (response.status === 200) {
-                    _this.showDia()
+                if (response.data.error) {
+                  alert(response.data.error)
                 }else{
-                    alert(JSON.stringify(response.data))
+                  _this.showDia()
                 }
             })
             .catch(function (err) {
