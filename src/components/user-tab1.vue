@@ -141,12 +141,34 @@
 </template>
 
 <script>
+import {myTools} from '../tools/myTools.js'
+import qs from 'qs'
+
 export default {
   data () {
     return {
         user_dia_show_new:false,
         user_dia_show_child:false,
         user_dia_show_change:false,
+        createFormData: {
+            account: '',
+            group_id: '',
+            name: '',
+            password: '',
+            password_confirmation:''
+        },
+        changeFormData: {
+            name: '',
+            account: '',
+            password: '',
+            email:'',
+            phone:''
+        },
+        payFormData:{
+            subagent_account:'',
+            item_type:'',
+            amount:''
+        }
     }
   },
   created: function () {
@@ -172,6 +194,45 @@ export default {
             }else{
                 this.user_dia_show_child = true
             }
+        },
+        create() {
+            myTools.axiosInstance.post('/agent/api/subagent', qs.stringify(this.createFormData))
+            .then(function (response) {
+                if (response.status === 200) {
+
+                } else {
+                    
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
+        },
+        change() {
+            myTools.axiosInstance.post('/agent/api/subagent/'+ 1, qs.stringify(this.changeFormData))
+            .then(function (response) {
+                if (response.status === 200) {
+
+                } else {
+                    
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
+        },
+        pay() {
+            myTools.axiosInstance.put('/agent/api/top-up/child/{subagent_account}/{item_type}/{amount}', qs.stringify(this.payFormData))
+            .then(function (response) {
+                if (response.status === 200) {
+
+                } else {
+                    
+                }
+            })
+            .catch(function (err) {
+                alert(err)
+            })
         }
     }
 }

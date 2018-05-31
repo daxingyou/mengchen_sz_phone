@@ -59,7 +59,6 @@
 
 <script>
 export default {
-//  name: 'pay',
   data () {
     return {
         pay_money:0,
