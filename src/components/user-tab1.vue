@@ -177,6 +177,7 @@ export default {
             item_type:'1',
             amount:''
         },
+        page:1,
         mTableData:mTableData
     }
   },
@@ -185,16 +186,27 @@ export default {
   },
     methods: {
         list(){
-            myTools.axiosInstance.get('/agent/api/subagent')
+            let _this = this
+            myTools.axiosInstance.get('/agent/api/subagent?page=' + this.page)
             .then(function (response) {
                 if (response.status === 200) {
                     var data = response.data.data
-                    mTableData.splice(0,mTableData.length)
+
+                    if(_this.page==1){
+                        mTableData.splice(0,mTableData.length)
+                    }
                     for(var i = 0;i<data.length;i++){
                         mTableData.push(data[i])
                     }
                     console.info("this.mTableData")
                     console.info(mTableData)
+                    
+                    if(data.length==0){
+                        _this.allLoaded = true
+                        _this.$refs.loadmore.onBottomLoaded()
+                    }else{
+                        _this.page++
+                    }
                 } else {
                     alert(JSON.stringify(response.data.data))
                 }
@@ -275,6 +287,10 @@ export default {
         },
         loadBottom() {
             console.log('loadBottom')
+            this.list()
+            //最后一页
+            // this.allLoaded = true
+            // this.$refs.loadmore.onBottomLoaded()
         },
         handleBottomChange(status) {
             console.log( "status:" + status)
@@ -283,7 +299,7 @@ export default {
             }else if(status == 'drop'){
 
             }else if(status== 'loading'){
-
+                
             }else{
 
             }
@@ -356,7 +372,6 @@ export default {
         background-color:#0000007F;
         padding: 1rem;
         z-index: 10;
-        /*display: none;*/
     }
     .charges-dialog-inner{
         width: 100%;

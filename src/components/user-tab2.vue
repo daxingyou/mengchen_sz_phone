@@ -283,4 +283,23 @@ export default {
         background-color: #ffffff;
         border-radius: 0.3rem;
     }
+
+   .key{
+        font-family: MicrosoftYaHei;
+        font-size: 1rem;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 1.5rem;
+        letter-spacing: 0rem;
+        color: #9f7a6f;
+    }
+    .value{
+        font-family: MicrosoftYaHei;
+        font-size: 1rem;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 1.5rem;
+        letter-spacing: 0rem;
+        color: #573126;
+    }
 </style>
