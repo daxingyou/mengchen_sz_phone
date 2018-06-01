@@ -1,6 +1,7 @@
 <template>
     <div style="background-color: #b9b49a;min-height: 30rem;height: 100%">
-
+      <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+                   :bottom-all-loaded="allLoaded" ref="loadmore">
         <div v-for="room in roomData" style="padding: 0.5rem">
             <div class="d-flex justify-content-between">
                 <div class="brand-title" style="padding: 0.1rem">
@@ -20,17 +21,22 @@
                 </div>
             </div>
         </div>
-        <!--todo 这里需要分页-->
+        </mt-loadmore>
     </div>
 
 </template>
 
 <script>
-  import {myTools} from '../tools/myTools.js'
+  import {myTools} from '../tools/myTools.js'  
+  import 'swiper/dist/css/swiper.css'
+  import {swiper, swiperSlide} from 'vue-awesome-swiper'
+
 
   export default {
         data () {
             return {
+              allLoaded: false,
+              page: 1,
               loading: true,
               roomData:[],
               communityRoomApi: '/agent/api/community/room/',   //获取牌艺馆id列表接口
@@ -38,18 +44,40 @@
             }
         },
         created: function () {
-          let _self = this
-
-          this.selectedCommunityId = this.$route.params.id
-
-          myTools.axiosInstance.get(this.communityRoomApi+this.selectedCommunityId)
-            .then(function (res) {
-              _self.roomData = res.data
-              _self.loading = false
-            })
-          console.log(this.roomData)
+            this.list()
         },
         methods: {
+            list(){
+                let _self = this
+
+                this.selectedCommunityId = this.$route.params.id
+
+                myTools.axiosInstance.get(this.communityRoomApi+this.selectedCommunityId + "?page=" + this.page)
+                    .then(function (res) {
+                    _self.roomData = res.data
+                    _self.loading = false
+
+                    if(_self.roomData.length > 0){
+                        _self.page++
+                    }else{
+                        _this.allLoaded = true
+                        _this.$refs.loadmore.onBottomLoaded()
+                    }
+                    })
+                console.log(this.roomData)
+            },
+            loadBottom() {
+                console.log('loadBottom')
+                this.list()
+            },
+            handleBottomChange(status) {
+                console.log("status:" + status)
+                if (status == 'pull') {
+                } else if (status == 'drop') {
+                } else if (status == 'loading') {
+                } else {
+                }
+            }
         }
     }
 </script>

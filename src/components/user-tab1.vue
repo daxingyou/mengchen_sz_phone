@@ -271,19 +271,22 @@
           })
       },
       destroy(id){
-        var _this = this;
-        myTools.axiosInstance.delete('/agent/api/subagent/' + id)
-          .then(function (response) {
-            if (response.status === 422) {
-              alert(JSON.stringify(response.data))
-            } else {
-              //console.info(response)
-              alert(response.data.error ? response.data.error : response.data.message)
-            }
-          })
-          .catch(function (err) {
-            alert(err)
-          })
+        let r = confirm("确定删除？")
+        if (r==true){
+          var _this = this;
+          myTools.axiosInstance.delete('/agent/api/subagent/' + id)
+            .then(function (response) {
+              if (response.status === 422) {
+                alert(JSON.stringify(response.data))
+              } else {
+                //console.info(response)
+                alert(response.data.error ? response.data.error : response.data.message)
+              }
+            })
+            .catch(function (err) {
+              alert(err)
+            })
+        }
       },
       showNewDia(){
         if (this.user_dia_show_new == true) {
