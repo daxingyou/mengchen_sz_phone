@@ -36,7 +36,7 @@ export default {
 
       this.$root.eventHub.$on('brandtab1:community-change', function (data) {
         _self.communityDetail = data
-        console.log('get event', _self.communityDetail)
+        //console.log('get event', _self.communityDetail)
       })
     },
     watch: {
