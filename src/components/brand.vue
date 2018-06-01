@@ -2,10 +2,10 @@
     <div style="padding-left: 1rem;padding-right: 1rem">
         <div style="padding-top: 20px;">
             <div class="btn-group" role="group" >
-                <button v-on:click="to('/brand/tab1')" type="button" :class=tab1 ><span class="tab-name">牌艺馆信息</span></button>
-                <button v-on:click="to('/brand/tab2')" type="button" :class=tab2><span class="tab-name">成员管理</span></button>
-                <button v-on:click="to('/brand/tab3')" type="button" :class=tab3><span class="tab-name">战绩管理</span></button>
-                <button v-on:click="to('/brand/tab4')" type="button" :class=tab4><span class="tab-name">房间管理</span></button>
+                <button v-on:click="to('brandtab1')" type="button" :class=tab1 ><span class="tab-name">牌艺馆信息</span></button>
+                <button v-on:click="to('brandtab2')" type="button" :class=tab2><span class="tab-name">成员管理</span></button>
+                <button v-on:click="to('brandtab3')" type="button" :class=tab3><span class="tab-name">战绩管理</span></button>
+                <button v-on:click="to('brandtab4')" type="button" :class=tab4><span class="tab-name">房间管理</span></button>
             </div>
         </div>
 
@@ -24,11 +24,20 @@ export default {
             tab1: 'btn btn-secondary active',
             tab2: 'btn btn-secondary',
             tab3: 'btn btn-secondary',
-            tab4: 'btn btn-secondary'
+            tab4: 'btn btn-secondary',
+
+          communityDetail: null,
         }
     },
     created: function () {
-        this.$router.push("/brand/tab1")
+      let _self = this
+
+      this.$router.push("/brand/tab1")
+
+      this.$root.eventHub.$on('brandtab1:community-change', function (data) {
+        _self.communityDetail = data
+        console.log('get event', _self.communityDetail)
+      })
     },
     watch: {
         "$route": "routeDate"
@@ -36,6 +45,7 @@ export default {
     methods: {
         routeDate(to, from)
         {
+          //console.log(to)
             if("/brand/tab1" === to.path){
                 this.tab1 = 'btn btn-secondary active'
                 this.tab2 = 'btn btn-secondary'
@@ -59,8 +69,22 @@ export default {
             }
         },
         to(path){
-            console.log(path)
-            this.$router.push(path)
+            //console.log(path)
+
+          //如果用户选择了community，则可以跳转到其他tab，否则跳转到tab1
+          if (this.communityDetail) {
+            this.$router.push({
+              name: path,
+              params: this.communityDetail,
+            })
+          } else {
+            if (path !== 'brandtab1') {
+              alert('请先选择牌艺馆')
+            }
+            this.$router.push({
+              name: 'brandtab1',
+            })
+          }
         }
     }
 }

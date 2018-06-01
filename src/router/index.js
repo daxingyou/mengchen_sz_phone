@@ -72,21 +72,26 @@ export default new Router({
         {
             path: '/main/tab3',
             component: brand,
+            name: 'brand',
             children: [
                 {
                     path: '/brand/tab1',
+                    name: 'brandtab1',
                     component: brandtab1
                 },
                 {
                     path: '/brand/tab2',
+                  name: 'brandtab2',
                     component: brandtab2
                 },
                 {
                     path: '/brand/tab3',
+                  name: 'brandtab3',
                     component: brandtab3
                 },
                 {
                     path: '/brand/tab4',
+                  name: 'brandtab4',
                     component: brandtab4
                 }
             ]

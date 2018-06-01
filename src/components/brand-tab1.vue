@@ -1,9 +1,8 @@
 <template>
     <div>
         <div>
-            <select class="m-sel">
-                <option value="1">1</option>
-                <option value="2">2</option>
+            <select class="m-sel" v-model="selectedCommunityId" v-if="loading === false" @change="onCommunitySelect">
+                <option :value="communityId" v-for="communityId in communityIds">{{communityId}}</option>
             </select>
         </div>
 
@@ -16,7 +15,6 @@
                 修改
             </div>
         </div>
-
 
         <div style="margin-top: 0.5rem;margin-left: 1rem;margin-right: 1rem" class="d-flex justify-content-between">
             <div class="key" style="text-align: left">
@@ -82,43 +80,67 @@
         </div>
 
 
-        <div v-show="brand_show" class="charges-dialog">
+        <!--<div v-show="brand_show" class="charges-dialog">-->
 
-            <div align="left" class="charges-dialog-inner">
-                <p class="d-title">申请提现</p>
+            <!--<div align="left" class="charges-dialog-inner">-->
+                <!--<p class="d-title">申请提现</p>-->
 
-                <div class="normal">牌艺馆名称</div>
-                <div>
-                    <input class="m-input"/>
-                </div>
+                <!--<div class="normal">牌艺馆名称</div>-->
+                <!--<div>-->
+                    <!--<input class="m-input"/>-->
+                <!--</div>-->
 
-                <div class="normal">简介</div>
-                <div>
-                    <input class="m-input"/>
-                </div>
+                <!--<div class="normal">简介</div>-->
+                <!--<div>-->
+                    <!--<input class="m-input"/>-->
+                <!--</div>-->
 
 
-                <div style="margin-top: 1rem;">
-                    <div v-on:click=showDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
-                </div>
-            </div>
+                <!--<div style="margin-top: 1rem;">-->
+                    <!--<div v-on:click=showDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>-->
+                <!--</div>-->
+            <!--</div>-->
 
-            <div v-on:click=showDia() class="close">
-                <img height="20px" src="../assets/btn_close.png"/>
-            </div>
-        </div>
+            <!--<div v-on:click=showDia() class="close">-->
+                <!--<img height="20px" src="../assets/btn_close.png"/>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
+
     export default {
         data () {
             return {
-                brand_show:false
+              brand_show:false,
+
+              loading: true,
+              communityIds: [],   //此登陆用户的牌艺馆id数组
+              communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆id列表接口
+              selectedCommunityId: '',  //已选中的牌艺馆id
+              communityDetail: {},  //被选中的牌艺馆的详细数据,
+              communityDetailApiPrefix: '/agent/api/community/detail/',
             }
         },
         created: function () {
+          //获取此代理商的牌艺馆ids
+          let _self = this
+
+          myTools.axiosInstance.get(this.communitiesIdsApi)
+            .then(function (res) {
+              _self.communityIds = res.data.community_ids
+              _self.loading = false
+            })
+
+          //如果牌艺馆已经被选择
+          console.log(this.$route.params)
+          if (this.$route.params) {
+            this.selectedCommunityId = this.$route.params.id
+            this.communityDetail = this.$route.params
+          }
         },
         methods: {
             showDia(){
@@ -127,7 +149,18 @@
                 }else{
                     this.brand_show = true
                 }
-            }
+            },
+          onCommunitySelect () {
+            let _self = this
+
+            myTools.axiosInstance.get(this.communityDetailApiPrefix + this.selectedCommunityId)
+              .then(function (res) {
+                _self.communityDetail = res.data
+
+                //向brand组件发送牌艺馆详细数据
+                _self.$root.eventHub.$emit('brandtab1:community-change', _self.communityDetail)
+              })
+          },
         }
     }
 </script>
