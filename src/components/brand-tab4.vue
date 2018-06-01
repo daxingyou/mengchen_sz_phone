@@ -1,5 +1,5 @@
 <template>
-    <div style="background-color: #ffffff;min-height: 30rem;height: 100%">
+    <div style="background-color: #b9b49a;min-height: 30rem;height: 100%">
 
         <div v-for="room in roomData" style="padding: 0.5rem">
             <div class="d-flex justify-content-between">
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-
+        <!--todo 这里需要分页-->
     </div>
 
 </template>
