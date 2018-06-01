@@ -9,7 +9,7 @@
         <div style="margin-top: 0.5rem" class="d-flex justify-content-between">
             <div>
                 <img height="20px" src="../assets/title_dot.png"/>
-                <span class="name" style="text-align: center;margin-left: 0.3rem">购买房卡</span>
+                <span class="name" style="text-align: center;margin-left: 0.3rem">牌艺馆信息</span>
             </div>
             <div v-on:click=showDia() class="change" style="text-align: end">
                 修改
@@ -21,7 +21,7 @@
                 牌艺馆名称:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                壹壹麻将会所
+                {{ communityDetail.name }}
             </div>
         </div>
 
@@ -30,7 +30,7 @@
                 牌艺馆ID:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                428302
+                {{ communityDetail.id }}
             </div>
         </div>
 
@@ -39,7 +39,7 @@
                 牌艺馆房卡:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                99999张
+                {{ communityDetail.card_stock }}
             </div>
         </div>
 
@@ -48,7 +48,7 @@
                 玩家ID:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                123465
+                {{ communityDetail.owner_agent_id }}
             </div>
         </div>
 
@@ -57,7 +57,7 @@
                 创建时间:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                2018-2-7 11:32:11
+                {{ communityDetail.created_at }}
             </div>
         </div>
 
@@ -66,7 +66,7 @@
                 牌艺馆成员:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                23
+                {{ communityDetail.members_count }}
             </div>
         </div>
 
@@ -75,42 +75,43 @@
                 简介:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                亲友聚一堂，一起打麻将
+                {{ communityDetail.info }}
             </div>
         </div>
 
 
-        <!--<div v-show="brand_show" class="charges-dialog">-->
+        <div v-show="brand_show" class="charges-dialog">
 
-            <!--<div align="left" class="charges-dialog-inner">-->
-                <!--<p class="d-title">申请提现</p>-->
+            <div align="left" class="charges-dialog-inner">
+                <p class="d-title">修改牌艺馆信息</p>
 
-                <!--<div class="normal">牌艺馆名称</div>-->
-                <!--<div>-->
-                    <!--<input class="m-input"/>-->
-                <!--</div>-->
+                <div class="normal">牌艺馆名称</div>
+                <div>
+                    <input class="m-input" v-model="editCommunityFormData.name"/>
+                </div>
 
-                <!--<div class="normal">简介</div>-->
-                <!--<div>-->
-                    <!--<input class="m-input"/>-->
-                <!--</div>-->
+                <div class="normal">简介</div>
+                <div>
+                    <input class="m-input" v-model="editCommunityFormData.info"/>
+                </div>
 
 
-                <!--<div style="margin-top: 1rem;">-->
-                    <!--<div v-on:click=showDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>-->
-                <!--</div>-->
-            <!--</div>-->
+                <div style="margin-top: 1rem;">
+                    <div v-on:click="editCommunity" style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
+                </div>
+            </div>
 
-            <!--<div v-on:click=showDia() class="close">-->
-                <!--<img height="20px" src="../assets/btn_close.png"/>-->
-            <!--</div>-->
-        <!--</div>-->
+            <div v-on:click=showDia() class="close">
+                <img height="20px" src="../assets/btn_close.png"/>
+            </div>
+        </div>
     </div>
 
 </template>
 
 <script>
     import {myTools} from '../tools/myTools.js'
+    import qs from 'qs'
 
     export default {
         data () {
@@ -121,8 +122,14 @@
               communityIds: [],   //此登陆用户的牌艺馆id数组
               communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆id列表接口
               selectedCommunityId: '',  //已选中的牌艺馆id
-              communityDetail: {},  //被选中的牌艺馆的详细数据,
+              communityDetail: null,  //被选中的牌艺馆的详细数据,
               communityDetailApiPrefix: '/agent/api/community/detail/',
+              editCommunityInfoApiPrefix: '/agent/api/community/info/',
+
+              editCommunityFormData: {
+                name: '',
+                info: '',
+              },
             }
         },
         created: function () {
@@ -144,6 +151,9 @@
         },
         methods: {
             showDia(){
+              this.editCommunityFormData.name = this.communityDetail.name
+              this.editCommunityFormData.info = this.communityDetail.info
+
                 if(this.brand_show == true){
                     this.brand_show = false
                 }else{
@@ -159,6 +169,17 @@
 
                 //向brand组件发送牌艺馆详细数据
                 _self.$root.eventHub.$emit('brandtab1:community-change', _self.communityDetail)
+              })
+          },
+          editCommunity () {
+            //console.log(this.communityDetail.id, this.editCommunityFormData)
+            let _self = this
+
+            myTools.axiosInstance.post(this.editCommunityInfoApiPrefix + this.communityDetail.id, qs.stringify(this.editCommunityFormData))
+              .then(function (res) {
+                alert('更新成功')
+                _self.onCommunitySelect()  //刷新此页面的社区数据
+                _self.showDia()
               })
           },
         }
