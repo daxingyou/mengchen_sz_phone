@@ -34,7 +34,7 @@ export default {
 
       this.$router.push("/brand/tab1")
 
-      this.$root.eventHub.$on('brandtab1:community-change', function (data) {
+      this.$root.eventHub.$on('brandtab:community-change', function (data) {
         _self.communityDetail = data
         //console.log('get event', _self.communityDetail)
       })

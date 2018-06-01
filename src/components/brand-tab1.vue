@@ -143,7 +143,7 @@
             })
 
           //如果牌艺馆已经被选择
-          console.log(this.$route.params)
+          //console.log(this.$route.params)
           if (this.$route.params) {
             this.selectedCommunityId = this.$route.params.id
             this.communityDetail = this.$route.params
@@ -168,7 +168,7 @@
                 _self.communityDetail = res.data
 
                 //向brand组件发送牌艺馆详细数据
-                _self.$root.eventHub.$emit('brandtab1:community-change', _self.communityDetail)
+                _self.$root.eventHub.$emit('brandtab:community-change', _self.communityDetail)
               })
           },
           editCommunity () {
