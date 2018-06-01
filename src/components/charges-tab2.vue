@@ -1,10 +1,15 @@
 <template>
     <div >
         <div>
-            <select class="m-sel">
-                <!--todo 这里是一个日期选择器，选择之后自动查询此时间的提现申请列表-->
-                <option value="2018-05-01">2018-05-01</option>
-            </select>
+            <date-picker  
+                class="m-sel" 
+                field="myDate"
+                placeholder="选择日期"
+                v-model="date"
+                format="yyyy/mm/dd"
+                :backward="false"
+                :no-today="true"
+                :forward="true"></date-picker>
         </div>
 
         <div style="margin-top: 0.5rem">
@@ -90,10 +95,13 @@
     import qs from 'qs'
     import 'swiper/dist/css/swiper.css'
     import {swiper, swiperSlide} from 'vue-awesome-swiper'
+    import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
+
 
 export default {
   data () {
     return {
+      date:'',
       charges_show:false,
       allLoaded: false,
       page: 1,
@@ -108,6 +116,9 @@ export default {
       tableDatas: [],
       withdrawLimits: [],   //提现金额限制
     }
+  },
+  components:{
+    'date-picker': myDatepicker
   },
     methods: {
         showDia(){
@@ -140,7 +151,7 @@ export default {
 
             for (var i = 0; i < data.length; i++) {
                 _self.tableDatas.push(data[i])
-              }
+            }
 
             if(_self.tableDatas.length>0){
                 _self.page ++
@@ -191,6 +202,13 @@ export default {
         background-color: #ffffff;
         border-radius: 0.3rem;
     }
+    .vue-datepicker input{
+        display: block;
+        padding-left: 6px;
+        border: 0px;
+        outline: none;
+    }
+
     table th{
         background-color:  #a35f4b;
         font-family: MicrosoftYaHei;

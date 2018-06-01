@@ -127,8 +127,6 @@ export default {
                     for (var i = 0; i < data.length; i++) {
                         _self.tableDatas.push(data[i])
                     }
-                    console.info("this.mTableData")
-                    console.info(mTableData)
                     if (data.length == 0) {
                         _self.allLoaded = true
                         _self.$refs.loadmore.onBottomLoaded()

@@ -45,7 +45,7 @@
             <!-- <td>未发货</td> -->
             <td><a v-on:click=showChildDia(info) href="#">充值</a>&nbsp;&nbsp;
               <a v-on:click=showChangeDia(subagent_id,info) href="#">修改</a>&nbsp;&nbsp;
-              <!--todo 删除需要加一个二次确认的弹窗-->
+              <!-- 删除需要加一个二次确认的弹窗-->
               <a @click="destroy(info.id)" href="#">删除</a></td>
           </tr>
           </tbody>

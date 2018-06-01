@@ -18,10 +18,20 @@
     <img v-on:click=showDia() style="float: right;margin-right: 0.6rem;margin-top: -3.4rem" height="15px"
          src="../assets/btn_close.png"/>
     <div>
-      <!--todo 添加日期选择器-->
+      <!--todo 添加日期选择器
       <select class="m-sel">
         <option value="2018-05-31">2018-05-31</option>
       </select>
+      -->
+      <date-picker  
+        class="m-sel" 
+        field="myDate"
+        placeholder="选择日期"
+        v-model="date"
+        format="yyyy/mm/dd"
+        :backward="false"
+        :no-today="true"
+        :forward="true"></date-picker>
     </div>
     <div style="margin-top: 0.5rem">
       <table width="100%">
@@ -102,9 +112,12 @@
 
 <script>
   import {myTools} from '../tools/myTools.js'
+  import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
+
   export default {
     data () {
       return {
+        date:'',
         charges_show: false,
         tableDatas: [],
         statisticsData: [],
@@ -113,6 +126,9 @@
         tableUrl: '/agent/api/rebates',
         rebateRules: '/admin/api/rebate-rules',
       }
+    },
+    components:{
+      'date-picker': myDatepicker
     },
     created: function () {
       let _self = this
