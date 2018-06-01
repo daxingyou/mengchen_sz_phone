@@ -169,8 +169,8 @@ export default {
             name: '',
             account: '',
             password: '',
-            email:'',
-            phone:''
+            //email:'',
+            //phone:''
         },
         payFormData:{
             subagent_account:'',
@@ -221,12 +221,13 @@ export default {
             console.info(this.createFormData)
             myTools.axiosInstance.post('/agent/api/subagent', qs.stringify(this.createFormData))
             .then(function (response) {
-                if (response.status === 200) {
-                    console.info(response)
-                    _this.showNewDia()
-                    _this.list()
+                if (response.status === 422) {
+                  alert(JSON.stringify(response.data))
                 } else {
-                    alert(JSON.stringify(response.data.data))
+                  console.info(response)
+                  alert(response.data.message)
+                  _this.showNewDia()
+                  //_this.list() //TODO 这里报错
                 }
             })
             .catch(function (err) {
@@ -235,7 +236,7 @@ export default {
         },
         change() {
             var _this = this;
-            myTools.axiosInstance.put('/agent/api/subagent/'+ this.subagent_id, qs.stringify(this.changeFormData))
+            myTools.axiosInstance.post('/agent/api/subagent/'+ this.subagent_id, qs.stringify(this.changeFormData))
             .then(function (response) {
                 if (response.status === 200) {
                     console.info(response)
@@ -252,11 +253,12 @@ export default {
             var _this = this;
             myTools.axiosInstance.post('/agent/api/top-up/child/'+this.payFormData.subagent_account+'/'+this.payFormData.item_type+'/'+this.payFormData.amount+'', qs.stringify(this.payFormData))
             .then(function (response) {
-                if (response.status === 200) {
-                    console.info(response)
-                    _this.showChildDia()
+                if (response.status === 422) {
+                  alert(JSON.stringify(response.data))
                 } else {
-                    alert(JSON.stringify(response.data.data))
+                  //console.info(response)
+                  alert(response.data.error? response.data.error : response.data.message)
+                  _this.showChildDia()
                 }
             })
             .catch(function (err) {
