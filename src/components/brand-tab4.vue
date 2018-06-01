@@ -1,40 +1,53 @@
 <template>
     <div style="background-color: #ffffff;min-height: 30rem;height: 100%">
 
-        <div style="padding: 0.5rem">
+        <div v-for="room in roomData" style="padding: 0.5rem">
             <div class="d-flex justify-content-between">
                 <div class="brand-title" style="padding: 0.1rem">
-                    <span class="brand-desc">景德镇麻将</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="brand-desc">房号:232223</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="brand-desc">2018-2-20 10:40:32</span>
+                    <span class="brand-desc">{{room.rtype}}</span>
+                    <span class="brand-desc">房号:{{room.rid}}</span>
+                    <span class="brand-desc">{{room.time}}</span>
                 </div>
                 <div class="normal">
-                    未开始
+                    {{room.cur_round}}/{{room.max_round}}
                 </div>
             </div>
             <div style="margin-top: 0.5rem" class="d-flex justify-content-start">
-                <div align="center">
-                    <div align="center"><img height="30px" src="../assets/icon_money.png"/></div>
-                    <div align="center">xxx</div>
-                    <div align="center">xxx</div>
-                </div>
-
-                <div style="margin-left: 1rem" align="center">
-                    <div align="center"><img height="30px" src="../assets/icon_money.png"/></div>
-                    <div class="player-name" align="center">xxx</div>
-                    <div class="player-id" align="center">xxx</div>
+                <div v-for="player in room.players" align="center">
+                    <div align="center"><img height="30px" :src="player.headimg"/></div>
+                    <div align="center">{{player.nickname}}</div>
+                    <div align="center">{{player.uid}}</div>
                 </div>
             </div>
         </div>
+
     </div>
 
 </template>
 
 <script>
-    export default {
+  import {myTools} from '../tools/myTools.js'
+
+  export default {
         data () {
             return {
+              loading: true,
+              roomData:[],
+              communityRoomApi: '/agent/api/community/room/',   //获取牌艺馆id列表接口
+              selectedCommunityId: '',  //已选中的牌艺馆id
             }
         },
         created: function () {
+          let _self = this
+
+          this.selectedCommunityId = this.$route.params.id
+
+          myTools.axiosInstance.get(this.communityRoomApi+this.selectedCommunityId)
+            .then(function (res) {
+              _self.roomData = res.data
+              _self.loading = false
+            })
+          console.log(this.roomData)
         },
         methods: {
         }
