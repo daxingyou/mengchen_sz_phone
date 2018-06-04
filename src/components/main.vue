@@ -16,8 +16,9 @@
         </div>
       </div>
 
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center" style="flex-direction: column;">
         <button class="pay"><span class="pay-str">去充值</span></button>
+        <button class="pay" @click="logout()"><span class="pay-str">登出</span></button>
       </div>
     </div>
 
@@ -40,6 +41,21 @@ export default {
       agentInfoApi: '/api/info',
       currentAgentInfo: null,
       inventoryCard: 0,
+    }
+  },
+  methods:{
+    logout(){
+      myTools.axiosInstance.post('/logout')
+        .then(function (response) {
+          if (response.status === 200 || response.status === 302) {
+            window.location.href = '/#/login'   //登出
+          } else {
+            alert('登出失败')
+          }
+        })
+        .catch(function (err) {
+          alert(err)
+        })
     }
   },
   created: function () {
@@ -84,10 +100,11 @@ export default {
   }
   .pay{
     width: 4rem;
-    height: 2rem;
+    height: 1.5rem;
     background-color: #089380;
     border-radius: 0.2rem;
-    border: 0px;
+    border: 0;
+    margin-top:0.3rem;
   }
   .pay-str{
     font-family: MicrosoftYaHei;
