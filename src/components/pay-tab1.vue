@@ -54,6 +54,18 @@
             <div class="pay-real-pay">{{pay_money}}元</div>
             <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn" @click="createWxOrder"><span>提交订单</span></div>
         </div>
+
+
+        <div v-show="pay_dia_show" class="charges-dialog">
+
+            <div align="center" class="charges-dialog-inner">
+                <img style="margin-top:1rem" :src=ercode ></img>
+            </div>
+
+            <div v-on:click=showNewDia() class="close">
+                <img height="20px" src="../assets/btn_close.png"/>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -66,15 +78,23 @@ export default {
     return {
       pay_money:0,
       pay_type:'wechat',
-
+      ercode:'', 
       wxOrderNum: null, //创建订单wx订单规则id号
       loading: true,
       wxTopUpRuleData: [],
       wxTopUpRuleApi: '/agent/api/wx-top-up-rules',
       orderCreationApi: '/api/wechat/order',
+      pay_dia_show: false
     }
   },
   methods:{
+      showNewDia(){
+        if (this.pay_dia_show == true) {
+          this.pay_dia_show = false
+        } else {
+          this.pay_dia_show = true
+        }
+      },
       sel(orderId, money){
         this.wxOrderNum = orderId
         this.pay_money = money;
@@ -100,13 +120,16 @@ export default {
         if (! this.wxOrderNum) {
           return alert('请先选择订单')
         }
-
+        let _self = this
         myTools.axiosInstance.post(this.orderCreationApi, qs.stringify({
           'wx_top_up_rule_id': this.wxOrderNum
         }))
           .then(function (res) {
-            //TODO 弹出微信支付二维码
+            // 弹出微信支付二维码
             console.log('success', res.data)
+            _self.ercode = "data:image/png;base64," + res.data.order_qr_code
+            _self.showNewDia()
+            
           })
           .catch(function (err) {
             alert(err)
@@ -203,5 +226,31 @@ export default {
         letter-spacing: 0rem;
         color: #ffffff;
         text-align: center;
+    }
+
+    .charges-dialog {
+        position: fixed;
+        top: 4rem;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: #0000007F;
+        padding: 1rem;
+        z-index: 10;
+    }
+
+    .charges-dialog-inner {
+        width: 100%;
+        height: 100%;
+        background-color: #f4f1e2;
+        box-shadow: 0rem 0rem 0rem 0rem rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        padding: 1rem;
+    }
+
+    .close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
     }
 </style>

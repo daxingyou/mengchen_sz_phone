@@ -1,18 +1,20 @@
 <template>
     <div >
         <div>
-            <!-- <select class="m-sel"> -->
-                <!--todo 这里是一个日期选择器，选择之后自动查询此时间的提现申请列表-->
-                <!-- <option value="2018-05-01">2018-05-01</option> -->
-            <!-- </select> -->
-            <calendar
-                class="m-sel"
+            <date-picker  
+                class="m-sel" 
+                field="myDate"
+                placeholder="选择日期"
                 v-model="date"
-                >
-            </calendar>
+                format="yyyy/mm/dd"
+                :backward="false"
+                :no-today="true"
+                :forward="true"></date-picker>
         </div>
 
         <div style="margin-top: 0.5rem">
+              <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+                   :bottom-all-loaded="allLoaded" ref="loadmore">
             <table width="100%" height="80%" style="background-color: #ffffff;" >
                 <thead style="background-color: #fffffe;">
                 <tr>
@@ -41,9 +43,10 @@
                     <td>{{tableData.withdrawal_status}}</td>
                     <td>{{tableData.remark}}</td>
                 </tr>
-                <!--todo 这里需要分页-->
+                <!-- 这里需要分页-->
                 </tbody>
             </table>
+            </mt-loadmore>
         </div>
         <div style="margin-top: 1rem;">
             <div v-on:click=showDia() style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>申请提现</span></div>
@@ -90,12 +93,18 @@
 <script>
     import {myTools} from '../tools/myTools.js'
     import qs from 'qs'
+    import 'swiper/dist/css/swiper.css'
+    import {swiper, swiperSlide} from 'vue-awesome-swiper'
+    import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
+
 
 export default {
   data () {
     return {
-      charges_show:false,
       date:'',
+      charges_show:false,
+      allLoaded: false,
+      page: 1,
       withdrawFormData: {
         amount: 500,
         contact: '',
@@ -107,6 +116,9 @@ export default {
       tableDatas: [],
       withdrawLimits: [],   //提现金额限制
     }
+  },
+  components:{
+    'date-picker': myDatepicker
   },
     methods: {
         showDia(){
@@ -126,6 +138,37 @@ export default {
             return res.data.error ? alert(res.data.error) : alert(res.data.message)
           })
       },
+      loadBottom() {
+        console.log('loadBottom')
+
+        myTools.axiosInstance.get(this.withdrawListApi)
+        .then(function (res) {
+            var data  = res.data.data   //分页数据
+
+            if (_this.page == 1) {
+                _self.tableDatas.splice(0, _self.tableDatas.length)
+            }
+
+            for (var i = 0; i < data.length; i++) {
+                _self.tableDatas.push(data[i])
+            }
+
+            if(_self.tableDatas.length>0){
+                _self.page ++
+            }else{
+                _self.allLoaded = true
+                _self.$refs.loadmore.onBottomLoaded()
+            }
+        })
+      },
+      handleBottomChange(status) {
+        console.log("status:" + status)
+        if (status == 'pull') {
+        } else if (status == 'drop') {
+        } else if (status == 'loading') {
+        } else {
+        }
+      },
     },
   created () {
     let _self = this
@@ -133,6 +176,12 @@ export default {
     myTools.axiosInstance.get(this.withdrawListApi)
       .then(function (res) {
         _self.tableDatas = res.data.data   //分页数据
+        if(_self.tableDatas.length>0){
+            _self.page ++
+        }else{
+            _self.allLoaded = true
+            _self.$refs.loadmore.onBottomLoaded()
+        }
       })
 
     myTools.axiosInstance.get(this.withdrawLimitApi)
@@ -153,6 +202,13 @@ export default {
         background-color: #ffffff;
         border-radius: 0.3rem;
     }
+    .vue-datepicker input{
+        display: block;
+        padding-left: 6px;
+        border: 0px;
+        outline: none;
+    }
+
     table th{
         background-color:  #a35f4b;
         font-family: MicrosoftYaHei;

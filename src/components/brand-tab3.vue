@@ -2,24 +2,22 @@
     <div >
         <div align="left">
             <span class="normal">玩家ID</span>
-            <select class="m-sel">
-                <option value="1">1</option>
-                <option value="2">2</option>
-            </select>
-
+            <input class="m-input" v-model="searchRecordForm.player_id" />
         </div>
+        <!--todo 时间选择器报错-->
         <div align="left">
             <span class="normal">时间</span>
             <date-picker field="myDate"
                          placeholder="选择日期"
-                         v-model="date"
+                         v-model="searchRecordForm.start_time"
                          format="yyyy/mm/dd"
                          :backward="false"
                          :no-today="false"></date-picker>
             <span class="normal">至</span>
             <date-picker field="myDate"
                          placeholder="选择日期"
-                         v-model="date"
+                         v-model="searchRecordForm.end_time"
+                         @input="searchRecord"
                          format="yyyy/mm/dd"
                          :backward="false"
                          :no-today="false"></date-picker>
@@ -27,10 +25,10 @@
         <div align="left" style="margin-left: 2rem;margin-top: 0.5">
             <a href="#">今天</a>&nbsp;&nbsp;&nbsp;<a href="#">昨天</a>&nbsp;&nbsp;&nbsp;<a href="#">七天</a>
         </div>
-        <div class="normal" align="right" style="margin-top: 0.5rem">
-            未审查房间数：1/2
+        <div class="normal" align="right" style="margin-top: 0.5rem" v-if="playerGameRecords">
+            未审查房间数：{{ playerGameRecords.unread_records }}
         </div>
-        <div style="margin-top: 0.5rem">
+        <div style="margin-top: 0.5rem" v-if="playerGameRecords">
             <table width="100%" >
                 <thead style="background-color: #fffffe;">
                 <tr>
@@ -41,7 +39,7 @@
                         房间信息
                     </th>
                     <th>
-                        结果
+                        局数
                     </th>
                     <th>
                         详情
@@ -52,40 +50,39 @@
                 </tr>
                 </thead>
                 <tbody style="background-color: #FFFFFF">
-                <tr>
-                    <td>1</td>
-                    <td>2000张
-                        赠送500张</td>
-                    <td>未支付</td>
-                    <td   ><a v-on:click=showDia() href="#" >详情</a></td>
-                    <td >审查</td>
+                <tr v-for="record in playerGameRecords.records">
+                    <td>{{record.time}}</td>
+                    <td>房号：{{record.rid}}</td>
+                    <td>{{ record.cur_round + '/' + record.max_round}}</td>
+                    <td><a v-on:click=showDia(record) href="#">详情</a></td>
+                    <td><a @click="markRecord(record.record_info.id)" href="#">审查</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <div v-show="brand_show" class="charges-dialog">
+        <div v-show="brand_show" class="charges-dialog" v-if="recordDetail">
 
             <div align="left"  class="charges-dialog-inner">
 
                 <p class="d-title">战绩详情</p>
 
                 <div style="padding: 1rem;	background-color: #dad5bb;border-radius: 1rem;">
-                    <div>2018-02-02 17:20 <span class="gray">至</span> 2018-4-21 12:03</div>
+                    <div>{{recordDetail.time}} <span class="gray">至</span> {{recordDetail.end_time }}</div>
 
                     <div class="d-flex justify-content-between">
-                        <div align="left"><span class="gray">房号：</span>232223</div>
-                        <div style="min-width: 8rem" align="left"><span class="gray">房主：</span>jeison2</div>
+                        <div align="left"><span class="gray">房号：</span>{{recordDetail.rid}}</div>
+                        <div style="min-width: 8rem" align="left"><span class="gray">房主：</span>{{recordDetail.creator.nickname}}</div>
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <div align="left"><span class="gray">局数：</span>8局</div>
-                        <div style="min-width: 8rem" align="left"><span class="gray">玩法：</span>景德镇麻将</div>
+                        <div align="left"><span class="gray">局数：</span>{{recordDetail.cur_round}}局</div>
+                        <!--<div style="min-width: 8rem" align="left"><span class="gray">玩法：</span>景德镇麻将</div>-->
                     </div>
 
 
                     <div class="d-flex justify-content-between">
-                        <div align="left"><span class="gray">回放码：</span>123123</div>
+                        <!--<div align="left"><span class="gray">回放码：</span>123123</div>-->
                         <div style="min-width: 8rem" align="left">&nbsp;</div>
                     </div>
 
@@ -94,34 +91,34 @@
 
                 <table style="margin-top: 1rem" width="100%" >
                     <tbody>
-                    <tr>
+                    <tr v-for="v in [1,2,3,4]">
                         <td>
                             <div class="d-flex justify-content-start">
                                 <div class="d-flex align-items-center">
-                                    <img  width="30px" height="30px" src="../assets/btn_close.png" >
+                                    <img  width="30px" height="30px" :src="recordDetail['player'+v].headimg" >
                                 </div>
                                 <div style="margin-left: 0.5rem">
-                                    <div style="text-align: left" class="mt-0">xxx</div>
-                                    <div style="text-align: left" >xxxx</div>
+                                    <div style="text-align: left" class="mt-0">{{recordDetail['player'+v].nickname}}</div>
+                                    <div style="text-align: left" >{{recordDetail['player'+v].id}}</div>
                                 </div>
                             </div>
                         </td>
-                        <td style="padding-right: 1rem" align="right"> <span class="add">+300</span></td>
+                        <td style="padding-right: 1rem" align="right"> <span class="add">{{ recordDetail['score_'+v] }}</span></td>
                     </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex justify-content-start">
-                                <div class="d-flex align-items-center">
-                                    <img  width="30px" height="30px" src="../assets/btn_close.png" >
-                                </div>
-                                <div style="margin-left: 0.5rem">
-                                    <div style="text-align: left" class="mt-0">xxx</div>
-                                    <div style="text-align: left" >xxxx</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="padding-right: 1rem" align="right"> <span class="minus">-300</span></td>
-                    </tr>
+                    <!--<tr>-->
+                        <!--<td>-->
+                            <!--<div class="d-flex justify-content-start">-->
+                                <!--<div class="d-flex align-items-center">-->
+                                    <!--<img  width="30px" height="30px" src="../assets/btn_close.png" >-->
+                                <!--</div>-->
+                                <!--<div style="margin-left: 0.5rem">-->
+                                    <!--<div style="text-align: left" class="mt-0">xxx</div>-->
+                                    <!--<div style="text-align: left" >xxxx</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</td>-->
+                        <!--<td style="padding-right: 1rem" align="right"> <span class="minus">-300</span></td>-->
+                    <!--</tr>-->
                     </tbody>
                 </table>
 
@@ -139,24 +136,92 @@
 <script>
 
     import myDatepicker from 'vue-datepicker-simple';
+    import {myTools} from '../tools/myTools.js'
+    import qs from 'qs'
+    import _ from 'lodash'
 
     export default {
         data () {
             return {
                 date: '',
-                brand_show:false
+                brand_show:false,
+
+              searchRecordApiPrefix: '/agent/api/community/game-record/',
+              markRecordApiPrefix: '/agent/api/community/game-record/mark/',
+              readCommunityLogPrefix: '/agent/api/community/member/log/read/',
+              searchRecordForm: {
+                player_id: null,
+                start_time: null,
+                end_time: null,
+              },
+              selectedCommunityId: null,
+              communityDetail: null,
+              playerGameRecords: null,   //战绩数据
+              recordDetail: null,   //战绩详情数据
             }
         },
         created: function () {
+          //如果牌艺馆已经被选择
+          //console.log(this.$route.params)
+          if (this.$route.params) {
+            this.selectedCommunityId = this.$route.params.id
+            this.communityDetail = this.$route.params
+          } else {
+            this.$route.push({
+              name: 'brandtab1',
+            })
+          }
+
+          //获取战绩数据（接js临时使用）
+          let _self = this
+
+          myTools.axiosInstance.get(this.searchRecordApiPrefix + 10009, {
+            params: {
+              'start_time': '2018-02-26 00:00:00',
+              'end_time': '2018-06-01 23:59:59',
+            },
+          })
+            .then(function (res) {
+              _self.playerGameRecords = res.data
+              console.log(_self.playerGameRecords)
+            })
         },
         methods: {
-            showDia(){
+            showDia(record){
+              this.recordDetail = record
+
                 if(this.brand_show == true){
                     this.brand_show = false
                 }else{
                     this.brand_show = true
                 }
-            }
+            },
+
+          searchRecord: _.debounce(function () {
+            let _self = this
+
+            myTools.axiosInstance.get(this.searchRecordApiPrefix + this.communityDetail.id, {
+              params: this.searchRecordForm,
+            })
+              .then(function (res) {
+                if (res.status === 422) {
+                  return alert(JSON.stringify(res.data))
+                }
+                _self.playerGameRecords = res.data
+                console.log(_self.playerGameRecords)
+              })
+          }, 800),
+
+          markRecord (recordInfoId) {
+            let _self = this
+            let api = this.markRecordApiPrefix + recordInfoId
+
+            myTools.axiosInstance.post(api)
+              .then(function (res) {
+                alert('标记成功')
+                _self.searchRecord()  //刷新数据
+              })
+          },
         },
         components: {
             'date-picker': myDatepicker
