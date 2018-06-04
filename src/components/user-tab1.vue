@@ -201,9 +201,11 @@ export default {
                     console.info("this.mTableData")
                     console.info(mTableData)
                     
-                    if(data.length==0){
-                        _this.allLoaded = true
-                        _this.$refs.loadmore.onBottomLoaded()
+                    if(data.length == 0){
+                        if(mTableData.length !=0){
+                            _this.allLoaded = true
+                            _this.$refs.loadmore.onBottomLoaded()
+                        }
                     }else{
                         _this.page++
                     }

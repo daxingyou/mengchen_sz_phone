@@ -1,10 +1,15 @@
 <template>
     <div >
         <div>
-            <select class="m-sel">
+            <!-- <select class="m-sel"> -->
                 <!--todo 这里是一个日期选择器，选择之后自动查询此时间的提现申请列表-->
-                <option value="2018-05-01">2018-05-01</option>
-            </select>
+                <!-- <option value="2018-05-01">2018-05-01</option> -->
+            <!-- </select> -->
+            <calendar
+                class="m-sel"
+                v-model="date"
+                >
+            </calendar>
         </div>
 
         <div style="margin-top: 0.5rem">
@@ -90,7 +95,7 @@ export default {
   data () {
     return {
       charges_show:false,
-
+      date:'',
       withdrawFormData: {
         amount: 500,
         contact: '',

@@ -22,6 +22,7 @@
             <select class="m-sel">
                 <option value="2018-05-31">2018-05-31</option>
             </select>
+            
         </div>
         <div style="margin-top: 0.5rem">
             <table width="100%">
