@@ -10,17 +10,13 @@
             <date-picker field="myDate"
                          placeholder="选择日期"
                          v-model="searchRecordForm.start_time"
-                         format="yyyy/mm/dd"
-                         :backward="true"
-                         :no-today="true"></date-picker>
+                         format="yyyy/mm/dd"></date-picker>
             <span class="normal">至</span>
             <date-picker field="myDate"
                          placeholder="选择日期"
                          v-model="searchRecordForm.end_time"
                          @input="searchRecord"
-                         format="yyyy/mm/dd"
-                         :backward="true"
-                         :no-today="true"></date-picker>
+                         format="yyyy/mm/dd"></date-picker>
         </div>
         <div align="left" style="margin-left: 2rem;margin-top: 0.5">
             <a href="#">今天</a>&nbsp;&nbsp;&nbsp;<a href="#">昨天</a>&nbsp;&nbsp;&nbsp;<a href="#">七天</a>

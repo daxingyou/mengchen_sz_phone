@@ -6,10 +6,7 @@
                 field="myDate"
                 placeholder="选择日期"
                 v-model="date"
-                format="yyyy/mm/dd"
-                :backward="true"
-                :no-today="true"
-                :forward="true"></date-picker>
+                format="yyyy/mm/dd"></date-picker>
         </div>
 
         <div style="margin-top: 0.5rem">
