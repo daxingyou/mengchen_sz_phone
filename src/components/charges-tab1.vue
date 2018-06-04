@@ -29,9 +29,6 @@
         placeholder="选择日期"
         v-model="date"
         format="yyyy-mm"
-        :backward="true"
-        :no-today="true"
-        :forward="true"
         @input="searchBalance"></date-picker>
     </div>
     <div style="margin-top: 0.5rem">
