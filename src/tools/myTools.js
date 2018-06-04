@@ -3,15 +3,15 @@ import axios from 'axios'
 let myTools = {
   //axios默认实例
   axiosInstance: axios.create({
-    // baseURL: 'http://local.mengchen-sz.cn',
-    baseURL: 'http://mengchen_sz.work',
-    // baseURL: 'http://hzhtnew-test.max78.com',
+    //baseURL: 'http://local.mengchen-sz.cn',
+    //baseURL: 'http://mengchen_sz.work',
+    baseURL: 'http://hzhtnew-test.max78.com',
     //baseURL: 'http://hzhtnew.max78.com',
     timeout: 10000,                          //超时时间
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
     validateStatus: function (status) {
-      return status === 200 || status === 422
+      return status === 200 || status === 422 || status === 401
     },
     withCredentials: true,
     headers: {

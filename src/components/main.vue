@@ -63,6 +63,10 @@ export default {
 
     myTools.axiosInstance.get(this.agentInfoApi)
       .then(function (res) {
+        if (res.status === 401) {
+          return window.location.href = '/#/login'   //未登陆，跳转登陆页面
+        }
+
         _self.currentAgentInfo = res.data
 
         if (_self.currentAgentInfo.inventorys.length > 0) {
