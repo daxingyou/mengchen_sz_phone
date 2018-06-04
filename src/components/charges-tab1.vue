@@ -23,15 +23,16 @@
         <option value="2018-05-31">2018-05-31</option>
       </select>
       -->
-      <date-picker  
-        class="m-sel" 
+      <date-picker
+        class="m-sel"
         field="myDate"
         placeholder="选择日期"
         v-model="date"
-        format="yyyy/mm/dd"
+        format="yyyy-mm"
         :backward="true"
         :no-today="true"
-        :forward="true"></date-picker>
+        :forward="true"
+        @input="searchBalance"></date-picker>
     </div>
     <div style="margin-top: 0.5rem">
       <table width="100%">
@@ -79,7 +80,7 @@
           <tr v-for="rule in RulesData">
             <td align="center">{{rule.price}}+</td>
             <td align="center"><span class="orange">{{rule.rate}}%</span></td>
-            <td align="center">{{calcRebate(rule.price,rule.rate)}}+</td>
+            <td align="center">{{calcRebate(rule.price, rule.rate)}}+</td>
           </tr>
           </tbody>
         </table>
@@ -113,11 +114,10 @@
 <script>
   import {myTools} from '../tools/myTools.js'
   import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
-
   export default {
     data () {
       return {
-        date:'',
+        date: '',
         charges_show: false,
         tableDatas: [],
         statisticsData: [],
@@ -127,7 +127,7 @@
         rebateRules: '/admin/api/rebate-rules',
       }
     },
-    components:{
+    components: {
       'date-picker': myDatepicker
     },
     created: function () {
@@ -146,8 +146,17 @@
         })
     },
     methods: {
-      calcRebate(price,rate){
-        return price * (rate/100)
+      searchBalance: _.debounce(function () {
+        let _self = this
+        let url = this.tableUrl + '?date=' + this.date
+
+        myTools.axiosInstance.get(url)
+          .then(function (res) {
+            _self.tableDatas = res.data.data   //分页数据
+          })
+      }, 800),
+      calcRebate(price, rate){
+        return price * (rate / 100)
       },
       showDia(){
         if (this.charges_show == true) {

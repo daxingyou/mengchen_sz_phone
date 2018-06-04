@@ -1,15 +1,16 @@
 <template>
     <div >
         <div>
-            <date-picker  
-                class="m-sel" 
+            <date-picker
+                class="m-sel"
                 field="myDate"
                 placeholder="选择日期"
                 v-model="date"
-                format="yyyy/mm/dd"
+                format="yyyy-mm-dd"
                 :backward="true"
                 :no-today="true"
-                :forward="true"></date-picker>
+                :forward="true"
+                @input="searchBalance"></date-picker>
         </div>
 
         <div style="margin-top: 0.5rem">
@@ -18,21 +19,11 @@
             <table width="100%" height="80%" style="background-color: #ffffff;" >
                 <thead style="background-color: #fffffe;">
                 <tr>
-                    <th>
-                        ID
-                    </th>
-                    <th>
-                        金额
-                    </th>
-                    <th>
-                        提交日期
-                    </th>
-                    <th>
-                        状态
-                    </th>
-                    <th>
-                        备注
-                    </th>
+                    <th>ID</th>
+                    <th>金额</th>
+                    <th>提交日期</th>
+                    <th>状态</th>
+                    <th>备注</th>
                 </tr>
                 </thead>
                 <tbody v-if="loading === false">
@@ -121,6 +112,21 @@ export default {
     'date-picker': myDatepicker
   },
     methods: {
+      searchBalance: _.debounce(function () {
+        let _self = this
+        let url = this.withdrawListApi + '?date=' + this.date
+
+        myTools.axiosInstance.get(url)
+          .then(function (res) {
+            _self.tableDatas = res.data.data   //分页数据
+            if(_self.tableDatas.length>0){
+              _self.page ++
+            }else{
+              _self.allLoaded = true
+              _self.$refs.loadmore.onBottomLoaded()
+            }
+          })
+      }, 800),
         showDia(){
             if(this.charges_show == true){
                 this.charges_show = false
