@@ -60,8 +60,8 @@
                     if(_self.roomData.length > 0){
                         _self.page++
                     }else{
-                        _this.allLoaded = true
-                        _this.$refs.loadmore.onBottomLoaded()
+                        _self.allLoaded = true
+                        //_self.$refs.loadmore.onBottomLoaded()
                     }
                     })
                 console.log(this.roomData)

@@ -256,19 +256,24 @@
       },
       pay() {
         var _this = this;
-        myTools.axiosInstance.post('/agent/api/top-up/child/' + this.payFormData.account + '/1/' + this.payFormData.amount + '', qs.stringify(this.payFormData))
-          .then(function (response) {
-            if (response.status === 422) {
-              alert(JSON.stringify(response.data))
-            } else {
-              //console.info(response)
-              alert(response.data.error ? response.data.error : response.data.message)
-              _this.showChildDia()
-            }
-          })
-          .catch(function (err) {
-            alert(err)
-          })
+        let r = confirm("是否给玩家（ID:"+this.payFormData.account+"）充值"+this.payFormData.amount+"张房卡？")
+        console.log("r="+r)
+        if (r==true){
+
+          myTools.axiosInstance.post('/agent/api/top-up/child/' + this.payFormData.account + '/1/' + this.payFormData.amount + '', qs.stringify(this.payFormData))
+            .then(function (response) {
+              if (response.status === 422) {
+                alert(JSON.stringify(response.data))
+              } else {
+                //console.info(response)
+                alert(response.data.error ? response.data.error : response.data.message)
+                _this.showChildDia()
+              }
+            })
+            .catch(function (err) {
+              alert(err)
+            })
+        }
       },
       destroy(id){
         let r = confirm("确定删除？")

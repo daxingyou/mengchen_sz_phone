@@ -126,7 +126,7 @@ export default {
     background-color: #00322c;
   }
   .pay{
-    width: 4rem;
+    width: 4.5rem;
     height: 1.5rem;
     background-color: #089380;
     border-radius: 0.2rem;
@@ -135,10 +135,10 @@ export default {
   }
   .pay-str{
     font-family: MicrosoftYaHei;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: normal;
     font-stretch: normal;
-    line-height: 1rem;
+    line-height: 0.8rem;
     letter-spacing: 0rem;
     color: #c3ead5;
   }

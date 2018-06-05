@@ -93,18 +93,23 @@ export default {
   }
   .tab-name{
     font-family: MicrosoftYaHei;
-    font-size: 0.3rem;
+    font-size: 12px;
     font-weight: normal;
     font-stretch: normal;
-    letter-spacing: 0px;
     color: #573126;
   }
   .tab-name .active{
     font-family: MicrosoftYaHei;
-    font-size: 0.3rem;
+    font-size: 12px;
     font-weight: normal;
     font-stretch: normal;
-    letter-spacing: 0px;
+    color: #f4f1e2;
+  }
+  .active span{
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    font-weight: normal;
+    font-stretch: normal;
     color: #f4f1e2;
   }
 

@@ -17,23 +17,23 @@
           <thead style="background-color: #fffffe;">
           <tr>
             <th>ID</th>
-            <th>订单说明</th>
-            <th>订单状态</th>
-            <th>发货状态</th>
+            <th width="140px">订单说明</th>
+            <th width="80px">订单状态</th>
+            <th width="80px">发货状态</th>
             <th>创建时间</th>
             <th>支付时间</th>
-            <th>操作</th>
+            <th width="40px">操作</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
           <tr v-for="tableData in tableDatas">
-            <td>{{tableData.id}}</td>
-            <td>{{tableData.body}}</td>
-            <td>{{tableData.order_status_name}}</td>
-            <td>{{tableData.item_delivery_status_name}}</td>
-            <td>{{tableData.created_at}}</td>
-            <td>{{tableData.paid_at}}</td>
-            <td class="caozuo" @click="pay(tableData.id)" v-if="tableData.order_status === 2">支付</td>
+            <td align="left">{{tableData.id}}</td>
+            <td align="left">{{tableData.body}}</td>
+            <td align="left">{{tableData.order_status_name}}</td>
+            <td align="left">{{tableData.item_delivery_status_name}}</td>
+            <td align="left">{{tableData.created_at}}</td>
+            <td align="left">{{tableData.paid_at}}</td>
+            <td  class="caozuo" @click="pay(tableData.id)" v-if="tableData.order_status === 2">支付</td>
           </tr>
           </tbody>
           <!-- 这里需要分页-->

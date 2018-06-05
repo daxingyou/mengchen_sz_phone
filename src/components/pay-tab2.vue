@@ -84,23 +84,29 @@ export default {
       let _self = this
       let api = `${this.topUpApiPrefix}/${this.formData.player_id}/${this.formData.type_id}/${this.formData.pay_num}`
 
-      myTools.axiosInstance.post(api)
-        .then(function (res) {
-          if (res.data.error) {
-//            alert(res.data.error)
-            if (res.data.error.match(new RegExp(/account_not_found/))) {
-              alert('玩家id不存在！')
-            } else {
-              alert(res.data.error)
-            }
-          } else {
-            alert(res.data.message)
-            //充值成功获取当前代理商的信息，更新main信息
-            _self.updateInfo()
-            _self.searchBalance()   //刷新玩家房卡余量
-          }
-          _self.formData.pay_num = ''
-        })
+
+        let r = confirm("是否给玩家（ID:"+this.formData.player_id+"）充值"+this.formData.pay_num+"张房卡？")
+        console.log("r="+r)
+        if (r==true){
+
+            myTools.axiosInstance.post(api)
+                .then(function (res) {
+                if (res.data.error) {
+        //            alert(res.data.error)
+                    if (res.data.error.match(new RegExp(/account_not_found/))) {
+                    alert('玩家id不存在！')
+                    } else {
+                    alert(res.data.error)
+                    }
+                } else {
+                    alert(res.data.message)
+                    //充值成功获取当前代理商的信息，更新main信息
+                    _self.updateInfo()
+                    _self.searchBalance()   //刷新玩家房卡余量
+                }
+                _self.formData.pay_num = ''
+                })
+        }
     },
 
     updateInfo () {

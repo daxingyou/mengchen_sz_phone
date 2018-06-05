@@ -1,38 +1,43 @@
 <template>
     <div class="tab">
       <nav class="nav nav-pills nav-justified">
+        
         <div :class=tab1 >
-          <div>
-            <router-link to="/main/tab1">
+          <router-link to="/main/tab1">
+          <div>   
               <img height="27px" src="../assets/home_btn1.png"/>
               <div class="tab-str">充值中心</div>
-            </router-link>
+            
           </div>
+            </router-link>
         </div>
         <div :class=tab2 >
+           <router-link to="/main/tab2">
           <div>
-            <router-link to="/main/tab2">
               <img height="27px" src="../assets/home_btn2.png"/>
               <div class="tab-str">佣金模式</div>
-            </router-link>
           </div>
+          </router-link>
         </div>
+        
         <div :class=tab3 >
+          <router-link to="/main/tab3">
           <div>
-            <router-link to="/main/tab3">
               <img height="27px" src="../assets/home_btn3.png"/>
               <div class="tab-str">牌艺馆</div>
-            </router-link>
           </div>
+           </router-link>
         </div>
+        
         <div :class=tab4 >
+          <router-link to="/main/tab4">
           <div>
-            <router-link to="/main/tab4">
               <img height="27px" src="../assets/home_btn4.png"/>
               <div class="tab-str">代理/个人</div>
-            </router-link>
           </div>
+          </router-link>
         </div>
+        
       </nav>
       <div class="content">
         <router-view></router-view>

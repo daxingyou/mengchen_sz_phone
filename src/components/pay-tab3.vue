@@ -68,14 +68,19 @@
                 return alert('数量错误')
               }
 
-              myTools.axiosInstance.post(this.topUpApi, qs.stringify(this.formData))
-                .then(function (res) {
-                  let msg = res.data.error ? res.data.error : res.data.message
-                  _self.formData.item_amount = 0
-                  _self.updateInfo()
-                  _self.searchCommunityBalance()   //刷新玩家房卡余量
-                  return alert(msg)
-                })
+                let r = confirm("是否给玩家（ID:"+this.formData.community_id+"）充值"+this.formData.item_amount+"张房卡？")
+                console.log("r="+r)
+                if (r==true){
+            
+                    myTools.axiosInstance.post(this.topUpApi, qs.stringify(this.formData))
+                        .then(function (res) {
+                        let msg = res.data.error ? res.data.error : res.data.message
+                        _self.formData.item_amount = 0
+                        _self.updateInfo()
+                        _self.searchCommunityBalance()   //刷新玩家房卡余量
+                        return alert(msg)
+                        })
+                }
             },
 
           searchCommunityBalance () {
