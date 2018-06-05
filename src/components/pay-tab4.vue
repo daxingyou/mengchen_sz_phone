@@ -1,227 +1,372 @@
 <template>
-    <div>
-        <div style="margin-top: 0.5rem">
-            <div>
-                <select v-model="orderType" v-on:change="" class="m-input">
-                    <option :value="orderType" selected>{{orderType}}</option>
-                    <!--<option value="2">2</option>-->
-                    <!--todo 这里不同的不同的订单（微信，玩家充值等）接口返回字段是不一样的，下面tbody得同步修改（暂不处理）-->
-                </select>
-            </div>
-        </div>
-        <div style="margin-top: 0.5rem">
-        <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
-                   :bottom-all-loaded="allLoaded" ref="loadmore">
-        
-            <table width="91%" style="margin-left: 1.1rem">
-                <thead style="background-color: #fffffe;">
-                    <tr>
-                        <th>
-                            ID
-                        </th>
-                        <th>
-                            订单说明
-                        </th>
-                        <th>
-                            订单状态
-                        </th>
-                        <th>
-                            发货状态
-                        </th>
-                        <th>
-                            创建时间
-                        </th>
-                        <th>
-                            支付时间
-                        </th>
-                        <th>
-                            操作
-                        </th>
-                    </tr>
-                </thead>
-                <tbody v-if="loading === false">
-                    <tr v-for="tableData in tableDatas">
-                        <td>{{tableData.id}}</td>
-                        <td>{{tableData.body}}</td>
-                        <td>{{tableData.order_status_name}}</td>
-                        <td>{{tableData.item_delivery_status_name}}</td>
-                        <td>{{tableData.created_at}}</td>
-                        <td>{{tableData.paid_at}}</td>
-                        <td class="caozuo" @click="pay(tableData.id)">支付</td>
-                    </tr>
-                </tbody>
-                <!-- 这里需要分页-->
-            </table>
-        </mt-loadmore>
-
-        </div>
-
-        <div v-show="pay_dia_show" class="charges-dialog">
-
-            <div align="center" class="charges-dialog-inner">
-                <img style="margin-top:1rem" :src=ercode ></img>
-            </div>
-
-            <div v-on:click=showNewDia() class="close">
-                <img height="20px" src="../assets/btn_close.png"/>
-            </div>
-        </div>
+  <div>
+    <div style="margin-top: 0.5rem">
+      <div>
+        <select v-model="currentOrderType" v-on:change="changeOrderType()" class="m-input">
+          <option :value="key" v-for="(type, key) in orderType" v-show="agentShow(key)">{{type}}</option>
+          <!--todo 这里不同的不同的订单（微信，玩家充值等）接口返回字段是不一样的，下面tbody得同步修改（暂不处理）-->
+        </select>
+      </div>
     </div>
+    <!--微信订单-->
+    <div style="margin-top: 0.5rem" v-show="showRecord.wechat">
+      <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+                   :bottom-all-loaded="allLoaded" ref="loadmore">
+
+        <table width="91%" style="margin-left: 1.1rem">
+          <thead style="background-color: #fffffe;">
+          <tr>
+            <th>ID</th>
+            <th>订单说明</th>
+            <th>订单状态</th>
+            <th>发货状态</th>
+            <th>创建时间</th>
+            <th>支付时间</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody v-if="loading === false">
+          <tr v-for="tableData in tableDatas">
+            <td>{{tableData.id}}</td>
+            <td>{{tableData.body}}</td>
+            <td>{{tableData.order_status_name}}</td>
+            <td>{{tableData.item_delivery_status_name}}</td>
+            <td>{{tableData.created_at}}</td>
+            <td>{{tableData.paid_at}}</td>
+            <td class="caozuo" @click="pay(tableData.id)" v-if="tableData.order_status === 2">支付</td>
+          </tr>
+          </tbody>
+          <!-- 这里需要分页-->
+        </table>
+      </mt-loadmore>
+
+    </div>
+    <!--玩家充值记录-->
+    <div style="margin-top: 0.5rem" v-show="showRecord.player">
+      <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+                   :bottom-all-loaded="allLoaded" ref="loadmore">
+
+        <table width="91%" style="margin-left: 1.1rem">
+          <thead style="background-color: #fffffe;">
+          <tr>
+            <th>玩家id</th>
+            <th>充值房卡数</th>
+            <th>充值时间</th>
+          </tr>
+          </thead>
+          <tbody v-if="loading === false">
+          <tr v-for="tableData in tableDatas">
+            <td>{{tableData.player}}</td>
+            <td>{{tableData.amount}}</td>
+            <td>{{tableData.created_at}}</td>
+          </tr>
+          </tbody>
+          <!-- 这里需要分页-->
+        </table>
+      </mt-loadmore>
+
+    </div>
+
+    <!--牌艺馆充值记录-->
+    <div style="margin-top: 0.5rem" v-show="showRecord.community">
+      <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+                   :bottom-all-loaded="allLoaded" ref="loadmore">
+
+        <table width="91%" style="margin-left: 1.1rem">
+          <thead style="background-color: #fffffe;">
+          <tr>
+            <th>id</th>
+            <th>牌艺馆id</th>
+            <th>充值房卡数</th>
+            <th>充值时间</th>
+          </tr>
+          </thead>
+          <tbody v-if="loading === false">
+          <tr v-for="tableData in tableDatas">
+            <td>{{tableData.id}}</td>
+            <td>{{tableData.community_id}}</td>
+            <td>{{tableData.item_amount}}</td>
+            <td>{{tableData.created_at}}</td>
+          </tr>
+          </tbody>
+          <!-- 这里需要分页-->
+        </table>
+      </mt-loadmore>
+
+    </div>
+
+    <!--代理商充值记录-->
+    <div style="margin-top: 0.5rem" v-show="showRecord.agent">
+      <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+                   :bottom-all-loaded="allLoaded" ref="loadmore">
+
+        <table width="91%" style="margin-left: 1.1rem">
+          <thead style="background-color: #fffffe;">
+          <tr>
+            <th>id</th>
+            <th>子代理商</th>
+            <th>充值房卡数</th>
+            <th>充值时间</th>
+          </tr>
+          </thead>
+          <tbody v-if="loading === false">
+          <tr v-for="tableData in tableDatas">
+            <td>{{tableData.id}}</td>
+            <td>{{tableData.receiver ? tableData.receiver.account : ''}}</td>
+            <td>{{tableData.amount}}</td>
+            <td>{{tableData.created_at}}</td>
+          </tr>
+          </tbody>
+          <!-- 这里需要分页-->
+        </table>
+      </mt-loadmore>
+
+    </div>
+
+    <div v-show="pay_dia_show" class="charges-dialog">
+
+      <div align="center" class="charges-dialog-inner">
+        <img :src=ercode style="margin-top:1rem"/>
+      </div>
+
+      <div v-on:click=showNewDia() class="close">
+        <img height="20px" src="../assets/btn_close.png"/>
+      </div>
+    </div>
+  </div>
 
 </template>
 
 <script>
-    import {myTools} from '../tools/myTools.js'
-      import 'swiper/dist/css/swiper.css'
+  import {myTools} from '../tools/myTools.js'
+  import 'swiper/dist/css/swiper.css'
   import {swiper, swiperSlide} from 'vue-awesome-swiper'
-
-export default {
-  name: 'pay',
-  data () {
-    return {
+  export default {
+    name: 'pay',
+    data () {
+      return {
         allLoaded: false,
         page: 1,
-        ercode:'', 
+        ercode: '',
         pay_dia_show: false,
-        orderType: '微信订单',
-        tableDatas:[],
+        orderType: {
+          wechat: '微信订单',
+          player: '玩家充值记录',
+          community: '牌艺馆充值记录',
+          agent: '代理商充值记录'
+        },
+        currentOrderType: 'wechat',
+        tableDatas: [],
         loading: true,
-      wxOrdersApi: '/api/wechat/order/agent',
-      wxOrder: {},  //点击了支付之后的订单详情对象
-    }
-  },
-    methods:{
-        showNewDia: function (){
-            if (this.pay_dia_show == true) {
-            this.pay_dia_show = false
-            } else {
-            this.pay_dia_show = true
+        wxOrdersApi: '/api/wechat/order/agent', //微信订单
+        playerRecordApi:'/agent/api/top-up/player', //玩家充值记录
+        communityRecordApi:'/agent/api/community/card/top-up-history?item_type_id=1', //牌艺馆充值记录
+        agentRecordApi:'/agent/api/top-up/child', //代理商充值记录
+        agentInfoApi: '/api/info', //当前登录用户
+
+        wxOrder: {},  //点击了支付之后的订单详情对象
+        currentAgentInfo: {},
+        showRecord:{
+          wechat:true,
+          player:false,
+          community:false,
+          agent:false,
+        },
+      }
+    },
+    methods: {
+      changeOrderType: function () {
+        console.log(this.currentOrderType)
+        this.page = 1
+        switch (this.currentOrderType){
+          case 'wechat':
+            this.showRecord.wechat = true
+            this.showRecord.player = false
+            this.showRecord.community = false
+            this.showRecord.agent = false
+            this.tableAxios(this.wxOrdersApi)
+            break;
+          case 'player':
+            this.showRecord.wechat = false
+            this.showRecord.player = true
+            this.showRecord.community = false
+            this.showRecord.agent = false
+            this.tableAxios(this.playerRecordApi)
+            break;
+          case 'community':
+            this.showRecord.wechat = false
+            this.showRecord.player = false
+            this.showRecord.community = true
+            this.showRecord.agent = false
+            this.tableAxios(this.communityRecordApi)
+            break;
+          case 'agent':
+            this.showRecord.wechat = false
+            this.showRecord.player = false
+            this.showRecord.community = false
+            this.showRecord.agent = true
+            this.tableAxios(this.agentRecordApi)
+
+            break;
+        }
+
+      },
+      agentShow(key){
+        if (key == 'agent'){
+          if (this.currentAgentInfo.group_id != 4){
+            return true
+          }
+          return false
+        }
+        return true
+      },
+      showNewDia: function () {
+        if (this.pay_dia_show == true) {
+          this.pay_dia_show = false
+        } else {
+          this.pay_dia_show = true
+        }
+      },
+
+      pay: function (id) {
+        let _self = this
+        //请求单个订单数据（含有支付二维码）
+        myTools.axiosInstance.get(this.wxOrdersApi + '/' + id)
+          .then(function (res) {
+            _self.wxOrder = res.data
+            //console.log('todo, 弹出支付二维码')
+            _self.ercode = "data:image/png;base64," + res.data.order_qr_code
+            _self.showNewDia()
+            // 弹出支付二维码弹窗
+            //返回的数据字段order_qr_code的值为base64之后的图片字符串
+          })
+      },
+      //todo 上拉加载没用
+      loadBottom() {
+        console.log('loadBottom')
+        let _self = this
+        myTools.axiosInstance.get(this.wxOrdersApi)
+          .then(function (res) {
+            let data = res.data.data   //分页数据
+            _self.loading = false
+            if (_self.page == 1) {
+              _self.tableDatas.splice(0, _self.tableDatas.length)
             }
-        },
-        pay: function (id) {
-          let _self = this
-
-          //请求单个订单数据（含有支付二维码）
-          myTools.axiosInstance.get(this.wxOrdersApi + '/' + id)
-            .then(function (res) {
-              _self.wxOrder = res.data
-              //console.log('todo, 弹出支付二维码')
-              _self.ercode = "data:image/png;base64," + res.data.order_qr_code
-              _self.showNewDia()
-              // 弹出支付二维码弹窗
-              //返回的数据字段order_qr_code的值为base64之后的图片字符串
-            })
-        },
-        loadBottom() {
-            console.log('loadBottom')
-                  let _self = this
-
-            myTools.axiosInstance.get(this.wxOrdersApi)
-                .then(function (res) {
-                let data = res.data.data   //分页数据
-                _self.loading = false
-
-                    if (_self.page == 1) {
-                        _self.tableDatas.splice(0, _self.tableDatas.length)
-                    }
-                    for (var i = 0; i < data.length; i++) {
-                        _self.tableDatas.push(data[i])
-                    }
-                    if (data.length == 0) {
-                        _self.allLoaded = true
-                        _self.$refs.loadmore.onBottomLoaded()
-                    } else {
-                        _self.page++
-                    }
-                })
-        },
-        handleBottomChange(status) {
-            console.log("status:" + status)
-            if (status == 'pull') {
-            } else if (status == 'drop') {
-            } else if (status == 'loading') {
-            } else {
+            for (var i = 0; i < data.length; i++) {
+              _self.tableDatas.push(data[i])
             }
-        },
+            if (data.length == 0) {
+              _self.allLoaded = true
+              _self.$refs.loadmore.onBottomLoaded()
+            } else {
+              _self.page++
+            }
+          })
+      },
+      handleBottomChange(status) {
+        console.log("status:" + status)
+        if (status == 'pull') {
+        } else if (status == 'drop') {
+        } else if (status == 'loading') {
+        } else {
+        }
+      },
+      tableAxios(url){
+        let _self = this
+        myTools.axiosInstance.get(url)
+          .then(function (res) {
+            _self.tableDatas = res.data.data   //分页数据
+            _self.loading = false
+            if (_self.tableDatas.length > 0) {
+              _self.page++
+            }
+          })
+        console.log(this.tableDatas)
+      },
+
     },
     created () {
       let _self = this
-
-      myTools.axiosInstance.get(this.wxOrdersApi)
+      this.changeOrderType('wechat');
+      //当前登录
+      myTools.axiosInstance.get(this.agentInfoApi)
         .then(function (res) {
-          _self.tableDatas = res.data.data   //分页数据
-          _self.loading = false
-          if(_self.tableDatas.length > 0){
-              _self.page++
+          if (res.status === 401) {
+            return window.location.href = '/#/login'   //未登陆，跳转登陆页面
           }
+          _self.currentAgentInfo = res.data
         })
     },
-}
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .m-input{
-        height: 2rem;
-        width: 90%;
-        border: 0px;
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-        padding-left: 5px;
-        padding-right: 5px;
-        background-color: #ffffff;
-        border-radius: 0.3rem;
-    }
-    table th{
-        background-color:  #a35f4b;
-        font-family: MicrosoftYaHei;
-        font-size: 0.5rem;
-        font-weight: normal;
-        font-stretch: normal;
-        line-height: 1.5rem;
-        letter-spacing: 0rem;
-        color: #ffffff;
-    }
-    table td{
-        font-family: MicrosoftYaHei;
-        font-size: 0.5rem;
-        font-weight: normal;
-        font-stretch: normal;
-        letter-spacing: 0rem;
-        color: #573126;
-    }
-    .caozuo{
-        font-family: MicrosoftYaHei;
-        text-decoration: underline;
-        font-size: 0.5rem;
-        font-weight: normal;
-        font-stretch: normal;
-        letter-spacing: 0rem;
-        color: #089380;
-    }
-    .charges-dialog {
-        position: fixed;
-        top: 4rem;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-        background-color: #0000007F;
-        padding: 1rem;
-        z-index: 10;
-    }
+  .m-input {
+    height: 2rem;
+    width: 90%;
+    border: 0px;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #ffffff;
+    border-radius: 0.3rem;
+  }
 
-    .charges-dialog-inner {
-        width: 100%;
-        height: 100%;
-        background-color: #f4f1e2;
-        box-shadow: 0rem 0rem 0rem 0rem rgba(0, 0, 0, 0.1);
-        border-radius: 1rem;
-        padding: 1rem;
-    }
+  table th {
+    background-color: #a35f4b;
+    font-family: MicrosoftYaHei;
+    font-size: 0.5rem;
+    font-weight: normal;
+    font-stretch: normal;
+    line-height: 1.5rem;
+    letter-spacing: 0rem;
+    color: #ffffff;
+  }
 
-    .close {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-    }
+  table td {
+    font-family: MicrosoftYaHei;
+    font-size: 0.5rem;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 0rem;
+    color: #573126;
+  }
+
+  .caozuo {
+    font-family: MicrosoftYaHei;
+    text-decoration: underline;
+    font-size: 0.5rem;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 0rem;
+    color: #089380;
+  }
+
+  .charges-dialog {
+    position: fixed;
+    top: 4rem;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #0000007F;
+    padding: 1rem;
+    z-index: 10;
+  }
+
+  .charges-dialog-inner {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f1e2;
+    box-shadow: 0rem 0rem 0rem 0rem rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+  }
 </style>
