@@ -59,7 +59,7 @@
       myTools.axiosInstance.get(this.agentInfoApi)
         .then(function (res) {
           if (res.status !== 401) {
-            return window.location.href = '/#/main'   //已登陆，跳转登陆之后的主页
+            return window.location.href = '/#/pay/tab1'   //已登陆，跳转登陆之后的主页
           }
         })
     },
@@ -69,7 +69,7 @@
         myTools.axiosInstance.post('/login', qs.stringify(this.formData))
           .then(function (response) {
             if (response.status === 200 || response.status === 302) {
-              window.location.href = '/#/main'   //登录成功，跳转首页
+              window.location.href = '/#/pay/tab1'   //登录成功，跳转首页
             } else {
               alert('帐号密码错误')
             }

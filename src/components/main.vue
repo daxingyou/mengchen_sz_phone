@@ -17,7 +17,7 @@
       </div>
 
       <div class="d-flex align-items-center" style="flex-direction: column;">
-        <button class="pay"><span class="pay-str">去充值</span></button>
+        <button class="pay" @click="jump2PayPage"><span class="pay-str">去充值</span></button>
         <button class="pay" @click="logout()"><span class="pay-str">登出</span></button>
       </div>
     </div>
@@ -56,7 +56,10 @@ export default {
         .catch(function (err) {
           alert(err)
         })
-    }
+    },
+    jump2PayPage () {
+      window.location.href = '/#/pay/tab1'   //跳转到充值中心-自助充值
+    },
   },
   created: function () {
     let _self = this
