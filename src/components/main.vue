@@ -87,6 +87,26 @@ export default {
           }
         }
       })
+
+    //监听info信息变动的事件，更新数据
+    this.$root.eventHub.$on('main:info', function (data) {
+      _self.currentAgentInfo = data
+
+      if (_self.currentAgentInfo.inventorys.length > 0) {
+        for (let inventory of _self.currentAgentInfo.inventorys) {
+          switch (inventory.item.name) {
+            case '房卡':
+              _self.inventoryCard = inventory.stock
+              break
+            case '金币':
+              _self.inventoryPoint = inventory.stock
+              break
+            default:
+              break
+          }
+        }
+      }
+    })
   },
 }
 </script>
