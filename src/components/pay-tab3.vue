@@ -16,8 +16,8 @@
 
             <div v-if="loading === false">
                 <select v-model="formData.community_id" class="m-input" v-on:change="searchCommunityBalance">
-                    <option :value="communityId" v-for="communityId in communityIds"
-                        >{{communityId}}</option>
+                    <option :value="community.id" v-for="community in communityList"
+                    >{{community.id}}-{{community.name}}</option>
                 </select>
             </div>
         </div>
@@ -52,7 +52,7 @@
               },
 
               loading: true,
-              communityIds: [],
+              communityList: [],
               topUpApi: '/agent/api/community/card/top-up',
               communitiesApi: '/agent/api/communities',  //获取此代理商的所有牌艺馆
               communityInfoApiPrefix: '/agent/api/community/info/',
@@ -99,7 +99,12 @@
 
         myTools.axiosInstance.get(this.communitiesApi)
         .then(function (res) {
-          _self.communityIds = res.data.community_ids
+          _self.communityList = res.data.communities
+          //默认选中第一个
+          if (_self.communityList.length > 0) {
+            _self.formData.community_id = _self.communityList[0].id
+            _self.searchCommunityBalance()
+          }
           _self.loading = false
         })
       },

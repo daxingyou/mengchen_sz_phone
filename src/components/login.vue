@@ -25,7 +25,7 @@
     </div>
 
     <div class="d-flex justify-content-around mar3">
-        <div class="p-2 d-flex align-items-center mar-left"><img style="z-index: 10;" class="d-flex align-items-center" height="20" src="../assets/cheak1.png"/><span class="d-flex align-items-center rem">记住账号</span></div>
+        <!--<div class="p-2 d-flex align-items-center mar-left"><img style="z-index: 10;" class="d-flex align-items-center" height="20" src="../assets/cheak1.png"/><span class="d-flex align-items-center rem">记住账号</span></div>-->
         <div class="p-2">&nbsp;</div>
         <div class="p-2">&nbsp;</div>
     </div>
