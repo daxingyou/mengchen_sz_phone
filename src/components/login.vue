@@ -20,7 +20,7 @@
         密码：
       </div>
       <div class="d-flex align-items-center">
-        <input class="input-cl" v-model="formData.password"/>
+        <input class="input-cl" type="password" v-model="formData.password"/>
       </div>
     </div>
 
@@ -50,7 +50,18 @@
           account: '',
           password: '',
         },
+        agentInfoApi: '/api/info',  //用户信息接口，用于访问之后确定用户是否已登陆
       }
+    },
+    created: function () {
+      let _self = this
+
+      myTools.axiosInstance.get(this.agentInfoApi)
+        .then(function (res) {
+          if (res.status !== 401) {
+            return window.location.href = '/#/pay/tab1'   //已登陆，跳转登陆之后的主页
+          }
+        })
     },
 
     methods: {
@@ -58,7 +69,7 @@
         myTools.axiosInstance.post('/login', qs.stringify(this.formData))
           .then(function (response) {
             if (response.status === 200 || response.status === 302) {
-              window.location.href = '/#/main'   //登录成功，跳转首页
+              window.location.href = '/#/pay/tab1'   //登录成功，跳转首页
             } else {
               alert('帐号密码错误')
             }
