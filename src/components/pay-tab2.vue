@@ -10,7 +10,7 @@
         </div>
         <div style="margin-top: 1rem">
             <div style="margin-left: 1rem;margin-right: 1rem" class="d-flex justify-content-between">
-                <div class="user-font" @input="searchBalance">顽家ID</div>
+                <div class="user-font" @input="searchBalance">玩家ID</div>
                 <div class="user-font">玩家房卡余量：<span class="user-fangka">{{ playerBalanceMsg }}</span></div>
             </div>
 
@@ -52,6 +52,7 @@ export default {
       playerBalanceMsg: '',
       searchPlayerApi: '/api/game/player',
       topUpApiPrefix: '/agent/api/top-up/player',
+      agentInfoApi: '/api/info',
     }
   },
   methods:{
@@ -86,11 +87,27 @@ export default {
       myTools.axiosInstance.post(api)
         .then(function (res) {
           if (res.data.error) {
-            alert(res.data.error)
+//            alert(res.data.error)
+            if (res.data.error.match(new RegExp(/account_not_found/))) {
+              alert('玩家id不存在！')
+            } else {
+              alert(res.data.error)
+            }
           } else {
             alert(res.data.message)
+            //充值成功获取当前代理商的信息，更新main信息
+            _self.updateInfo()
+            _self.searchBalance()   //刷新玩家房卡余量
           }
           _self.formData.pay_num = ''
+        })
+    },
+
+    updateInfo () {
+      let _self = this
+      myTools.axiosInstance.get(this.agentInfoApi)
+        .then(function (res) {
+          _self.$root.eventHub.$emit('main:info', res.data)
         })
     },
   }
