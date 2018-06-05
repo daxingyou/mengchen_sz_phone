@@ -62,21 +62,29 @@ export default {
             this.tab2 = 'nav-item nav-link nav-margin-left'
             this.tab3 = 'nav-item nav-link nav-margin-left'
             this.tab4 = 'nav-item nav-link nav-margin-left'
+
+          window.location.href = '/#/pay/tab1'   //跳转到充值中心-自助充值
         }else if("/main/tab2" === to.path){
             this.tab1 = 'nav-item nav-link'
             this.tab2 = 'nav-item nav-link nav-margin-left active'
             this.tab3 = 'nav-item nav-link nav-margin-left'
             this.tab4 = 'nav-item nav-link nav-margin-left'
+
+          window.location.href = '/#/charges/tab1'   //跳转到佣金模式-我的佣金
         }else if("/main/tab3" === to.path){
             this.tab1 = 'nav-item nav-link'
             this.tab2 = 'nav-item nav-link nav-margin-left'
             this.tab3 = 'nav-item nav-link nav-margin-left active'
             this.tab4 = 'nav-item nav-link nav-margin-left'
+
+          window.location.href = '/#/brand/tab1'   //跳转到牌艺馆-牌艺馆信息
         }else if("/main/tab4" === to.path){
             this.tab1 = 'nav-item nav-link'
             this.tab2 = 'nav-item nav-link nav-margin-left'
             this.tab3 = 'nav-item nav-link nav-margin-left'
             this.tab4 = 'nav-item nav-link nav-margin-left active'
+
+          window.location.href = '/#/user/tab1'   //跳转到代理/个人-代理管理
         }
     }
   }
