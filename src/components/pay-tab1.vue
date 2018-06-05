@@ -15,16 +15,19 @@
             <div v-on:click="sel(wxTopUpRuleData[1].id, wxTopUpRuleData[1].price_yuan)" style="margin-left: 10px;" :class=selAct(wxTopUpRuleData[1].price_yuan)>
                 <div class="fangka-str">{{ wxTopUpRuleData[1].remark.split('+')[0] }}</div>
                 <div class="fangka-des">额外赠送<span>{{ wxTopUpRuleData[1].give }}</span>张</div>
+                <!--<div class="fangka-des"><span>{{ wxTopUpRuleData[1].remark }}</span></div>-->
             </div>
         </div>
         <div style="margin-left: 1rem;margin-right: 1rem;margin-top: 0.5rem" class="d-flex justify-content-between" v-if="loading === false">
             <div v-on:click="sel(wxTopUpRuleData[2].id, wxTopUpRuleData[2].price_yuan)" :class=selAct(wxTopUpRuleData[2].price_yuan)>
                 <div class="fangka-str">{{ wxTopUpRuleData[2].remark.split('+')[0] }}</div>
                 <div class="fangka-des">额外赠送<span>{{ wxTopUpRuleData[2].give }}</span>张</div>
+                <!--<div class="fangka-des"><span>{{ wxTopUpRuleData[2].remark }}</span></div>-->
             </div>
             <div v-on:click="sel(wxTopUpRuleData[3].id, wxTopUpRuleData[3].price_yuan)" style="margin-left: 10px;" :class=selAct(wxTopUpRuleData[3].price_yuan)>
                 <div class="fangka-str">{{ wxTopUpRuleData[3].remark.split('+')[0] }}</div>
                 <div class="fangka-des">额外赠送<span>{{ wxTopUpRuleData[3].give }}</span>张</div>
+                <!--<div class="fangka-des"><span>{{ wxTopUpRuleData[3].remark }}</span></div>-->
             </div>
         </div>
         <div class="fangka-ps">
@@ -58,7 +61,10 @@
 
         <div v-show="pay_dia_show" class="charges-dialog">
 
+
             <div align="center" class="charges-dialog-inner">
+                <p class="d-title" align="center">使用微信刷码支付</p>
+
                 <img style="margin-top:1rem" :src=ercode ></img>
             </div>
 
@@ -107,6 +113,10 @@ export default {
           }
       },
       selPayType(pay_type){
+        if (pay_type === 'cash') {
+          alert('功能暂未开放！')
+          return this.pay_type = 'wechat'
+        }
           this.pay_type = pay_type
       },
       selPayTypeCss(pay_type){
@@ -143,6 +153,8 @@ export default {
       .then(function (res) {
         _self.wxTopUpRuleData = res.data
         _self.loading = false
+
+        _self.sel(_self.wxTopUpRuleData[0].id, _self.wxTopUpRuleData[0].price_yuan)
       })
   },
 }
@@ -252,5 +264,16 @@ export default {
         position: absolute;
         top: 1.5rem;
         right: 1.5rem;
+    }
+
+    .d-title{
+        margin-top: 0.5rem;
+        font-family: MicrosoftYaHei-Bold;
+        font-size: 1.5rem;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 1.5rem;
+        letter-spacing: 0rem;
+        color: #573126;
     }
 </style>
