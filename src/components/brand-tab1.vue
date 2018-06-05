@@ -2,7 +2,7 @@
     <div>
         <div>
             <select class="m-sel" v-model="selectedCommunityId" v-if="loading === false" @change="onCommunitySelect">
-                <option :value="communityId" v-for="communityId in communityIds">{{communityId}}</option>
+                <option :value="community.id" v-for="community in communityList">{{community.id}} - {{community.name}}</option>
             </select>
         </div>
 
@@ -119,7 +119,7 @@
               brand_show:false,
 
               loading: true,
-              communityIds: [],   //此登陆用户的牌艺馆id数组
+              communityList: [],   //此登陆用户的牌艺馆id数组
               communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆id列表接口
               selectedCommunityId: '',  //已选中的牌艺馆id
               communityDetail: null,  //被选中的牌艺馆的详细数据,
@@ -138,7 +138,7 @@
 
           myTools.axiosInstance.get(this.communitiesIdsApi)
             .then(function (res) {
-              _self.communityIds = res.data.community_ids
+              _self.communityList = res.data.communities
               _self.loading = false
             })
 

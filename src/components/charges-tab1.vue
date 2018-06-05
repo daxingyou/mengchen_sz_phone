@@ -36,7 +36,8 @@
         <thead style="background-color: #fffffe;">
         <tr>
           <th>ID</th>
-          <th>代理商</th>
+          <th>提供代理商</th>
+          <th>代理级别</th>
           <th>当月充值</th>
           <th>月份</th>
           <th>比例%</th>
@@ -46,6 +47,7 @@
         <tbody>
         <tr v-for="tableData in tableDatas">
           <td>{{tableData.id}}</td>
+          <td>{{tableData.children.name}}</td>
           <td>{{tableData.children.group.name}}</td>
           <td>{{tableData.total_amount}}</td>
           <td>{{tableData.rebate_at}}</td>

@@ -6,7 +6,7 @@
                 field="myDate"
                 placeholder="选择日期"
                 v-model="date"
-                format="yyyy-mm-dd"
+                format="yyyy-mm"
                 @input="searchBalance"></date-picker>
         </div>
 
@@ -136,7 +136,8 @@ export default {
         myTools.axiosInstance.post(this.withdrawListApi, qs.stringify(this.withdrawFormData))
           .then(function (res) {
             if (res.status === 422) {
-              return alert(JSON.stringify(res.data))
+//              return alert(JSON.stringify(res.data))
+              return alert('请确认信息是否填写完毕')
             }
             return res.data.error ? alert(res.data.error) : alert(res.data.message)
           })
