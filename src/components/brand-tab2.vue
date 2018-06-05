@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between">
             <div>
                 <select class="m-sel" v-model="selectedCommunityId" @change="onCommunitySelect">
-                    <option :value="communityId" v-for="communityId in communityIds">{{communityId}}</option>
+                    <option :value="community.id" v-for="community in communityList">{{community.id}} - {{community.name}}</option>
                 </select>
             </div>
             <div>
@@ -36,7 +36,7 @@
                         </div>
                     </td>
                     <td style="padding-right: 1rem" align="right">
-                        <a v-on:click=showDia() class="zhanji" href="#">战绩</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a v-on:click=searchZj(member) class="zhanji" href="#">战绩</a>&nbsp;&nbsp;&nbsp;&nbsp;
                         <a class="kick" href="#" @click="kickOutMember(member.id)">踢出</a>
                     </td>
                 </tr>
@@ -128,8 +128,8 @@
 
               selectedCommunityId: '',  //已选中的牌艺馆id
               communityDetail: null,
-              communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆id列表接口
-              communityIds: [],   //此登陆用户的牌艺馆id数组
+              communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆列表接口
+              communityList: [],   //此登陆用户的牌艺馆id数组
               communityDetailApiPrefix: '/agent/api/community/detail/',
 
               searchPlayerApi: '/api/game/player',
@@ -152,7 +152,7 @@
 
           myTools.axiosInstance.get(this.communitiesIdsApi)
             .then(function (res) {
-              _self.communityIds = res.data.community_ids
+              _self.communityList = res.data.communities
               _self.loading = false
             })
 
@@ -168,6 +168,13 @@
           }
         },
         methods: {
+          searchZj(member){
+            this.communityDetail.currentMemberId = member.id
+            this.$router.push({
+              name: 'brandtab3',
+              params: this.communityDetail,
+            })
+          },
             showDia(){
                 if(this.brand_show == true){
                     this.brand_show = false

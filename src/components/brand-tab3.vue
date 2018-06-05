@@ -134,6 +134,7 @@
     data () {
       return {
         dateFormat: 'YYYY-MM-DD',
+        dateHFormat: 'YYYY-MM-DD HH:mm:ss',
         date: '',
         brand_show: false,
         searchRecordApiPrefix: '/agent/api/community/game-record/',
@@ -152,27 +153,31 @@
     },
     created: function () {
       //如果牌艺馆已经被选择
-      //console.log(this.$route.params)
+      console.log(this.$route.params)
       if (this.$route.params) {
         this.selectedCommunityId = this.$route.params.id
         this.communityDetail = this.$route.params
+        this.searchRecordForm.player_id = this.$route.params.currentMemberId
       } else {
         this.$route.push({
           name: 'brandtab1',
         })
       }
+
+      this.changeSearchRecordDate('year')
       //获取战绩数据（接js临时使用）
-      let _self = this
-      myTools.axiosInstance.get(this.searchRecordApiPrefix + 10009, {
-        params: {
-          'start_time': '2018-02-26 00:00:00',
-          'end_time': '2018-06-01 23:59:59',
-        },
-      })
-        .then(function (res) {
-          _self.playerGameRecords = res.data
-          console.log(_self.playerGameRecords)
-        })
+//      let _self = this
+//      myTools.axiosInstance.get(this.searchRecordApiPrefix + 10009, {
+//        params: {
+//          'start_time': _self.searchRecordForm.start_time = moment().add(-1, 'year').startOf('day').format(this.dateHFormat),
+//          'end_time': _self.searchRecordForm.end_time = moment().endOf('day').format(this.dateHFormat),
+//        },
+//      })
+//        .then(function (res) {
+//          _self.playerGameRecords = res.data
+//          console.log(_self.playerGameRecords)
+//        })
+
     },
     methods: {
       //更新查询玩家战绩的开始结束时间
@@ -192,6 +197,10 @@
             break
           case '1week':
             this.searchRecordForm.start_time = moment().add(-6, 'days').startOf('day').format(this.dateFormat)
+            this.searchRecordForm.end_time = moment().endOf('day').format(this.dateFormat)
+            break;
+          default:
+            this.searchRecordForm.start_time = moment().add(-1, 'year').startOf('day').format(this.dateFormat)
             this.searchRecordForm.end_time = moment().endOf('day').format(this.dateFormat)
             break
         }
