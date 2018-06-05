@@ -57,6 +57,7 @@
               communitiesApi: '/agent/api/communities',  //获取此代理商的所有牌艺馆
               communityInfoApiPrefix: '/agent/api/community/info/',
               communityBalance: 0,
+              agentInfoApi: '/api/info',
             }
         },
         methods:{
@@ -71,6 +72,8 @@
                 .then(function (res) {
                   let msg = res.data.error ? res.data.error : res.data.message
                   _self.formData.item_amount = 0
+                  _self.updateInfo()
+                  _self.searchCommunityBalance()   //刷新玩家房卡余量
                   return alert(msg)
                 })
             },
@@ -81,6 +84,13 @@
             myTools.axiosInstance.get(this.communityInfoApiPrefix + this.formData.community_id)
               .then(function (res) {
                 _self.communityBalance = res.data.card_stock
+              })
+          },
+          updateInfo () {
+            let _self = this
+            myTools.axiosInstance.get(this.agentInfoApi)
+              .then(function (res) {
+                _self.$root.eventHub.$emit('main:info', res.data)
               })
           },
         },
