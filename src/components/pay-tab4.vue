@@ -126,6 +126,7 @@
     <div v-show="pay_dia_show" class="charges-dialog">
 
       <div align="center" class="charges-dialog-inner">
+        <p class="d-title" align="center">使用微信刷码支付</p>
         <img :src=ercode style="margin-top:1rem"/>
       </div>
 

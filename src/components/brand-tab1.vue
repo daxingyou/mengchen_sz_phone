@@ -1,12 +1,18 @@
 <template>
     <div>
+        <div class="d-flex justify-content-between">
+            <div v-on:click=showNewDia() class="pay-btn"><span>创建牌艺馆</span></div>
+        </div>
         <div>
             <select class="m-sel" v-model="selectedCommunityId" v-if="loading === false" @change="onCommunitySelect">
                 <option :value="community.id" v-for="community in communityList">{{community.id}} - {{community.name}}</option>
             </select>
         </div>
 
+
+
         <div style="margin-top: 0.5rem" class="d-flex justify-content-between">
+
             <div>
                 <img height="20px" src="../assets/title_dot.png"/>
                 <span class="name" style="text-align: center;margin-left: 0.3rem">牌艺馆信息</span>
@@ -105,6 +111,37 @@
                 <img height="20px" src="../assets/btn_close.png"/>
             </div>
         </div>
+
+        <div v-show="create_show" class="charges-dialog">
+
+            <div align="left" class="charges-dialog-inner">
+                <p class="d-title">创建牌艺馆</p>
+
+                <div class="normal">游戏ID</div>
+                <div>
+                    <input class="m-input" v-model="createCommunityFormData.gameId"/>
+                </div>
+
+                <div class="normal">牌艺馆名称</div>
+                <div>
+                    <input class="m-input" v-model="createCommunityFormData.name"/>
+                </div>
+
+                <div class="normal">牌艺馆简介</div>
+                <div>
+                    <input class="m-input" v-model="createCommunityFormData.info"/>
+                </div>
+
+
+                <div style="margin-top: 1rem;">
+                    <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
+                </div>
+            </div>
+
+            <div v-on:click=showNewDia() class="close">
+                <img height="20px" src="../assets/btn_close.png"/>
+            </div>
+        </div>
     </div>
 
 </template>
@@ -117,7 +154,7 @@
         data () {
             return {
               brand_show:false,
-
+              create_show:false,
               loading: true,
               communityList: [],   //此登陆用户的牌艺馆id数组
               communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆id列表接口
@@ -127,6 +164,12 @@
               editCommunityInfoApiPrefix: '/agent/api/community/info/',
 
               editCommunityFormData: {
+                name: '',
+                info: '',
+              },
+
+              createCommunityFormData: {
+                gameId: '',
                 name: '',
                 info: '',
               },
@@ -158,6 +201,13 @@
                     this.brand_show = false
                 }else{
                     this.brand_show = true
+                }
+            },
+            showNewDia(){
+                if(this.create_show == true){
+                    this.create_show = false
+                }else{
+                    this.create_show = true
                 }
             },
           onCommunitySelect () {

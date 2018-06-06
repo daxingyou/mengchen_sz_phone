@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class=main_div>
     <div style="padding-left: 2.5rem;padding-right: 2.5rem;padding-top: 0.5rem;padding-bottom: 0.5rem"
          class="d-flex justify-content-between bg">
       <div>
@@ -16,19 +16,26 @@
       </div>
     </div>
     <img v-on:click=showDia() style="float: right;margin-right: 0.6rem;margin-top: -3.4rem" height="15px"
-         src="../assets/btn_close.png"/>
+         src="../assets/help.png"/>
     <div>
       <!--todo 添加日期选择器
       <select class="m-sel">
         <option value="2018-05-31">2018-05-31</option>
       </select>
       -->
-      <date-picker
+      开始日期：<date-picker
         class="m-sel"
         field="myDate"
         placeholder="选择日期"
         v-model="date"
-        format="yyyy-mm"
+        format="yyyy-mm-dd"
+        @input="searchBalance"></date-picker>
+      结束日期：<date-picker
+        class="m-sel"
+        field="myDate"
+        placeholder="选择日期"
+        v-model="end_date"
+        format="yyyy-mm-dd"
         @input="searchBalance"></date-picker>
     </div>
     <div style="margin-top: 0.5rem">
@@ -113,10 +120,33 @@
 <script>
   import {myTools} from '../tools/myTools.js'
   import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
+
+  Date.prototype.format = function(fmt) { 
+      var o = { 
+          "M+" : this.getMonth()+1,                 //月份 
+          "d+" : this.getDate(),                    //日 
+          "h+" : this.getHours(),                   //小时 
+          "m+" : this.getMinutes(),                 //分 
+          "s+" : this.getSeconds(),                 //秒 
+          "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+          "S"  : this.getMilliseconds()             //毫秒 
+      }; 
+      if(/(y+)/.test(fmt)) {
+              fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+      }
+      for(var k in o) {
+          if(new RegExp("("+ k +")").test(fmt)){
+              fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+          }
+      }
+      return fmt; 
+  }
+
   export default {
     data () {
       return {
         date: '',
+        end_date: '',
         charges_show: false,
         tableDatas: [],
         statisticsData: [],
@@ -124,6 +154,7 @@
         statisticsApi: '/agent/api/rebates/statistics',
         tableUrl: '/agent/api/rebates',
         rebateRules: '/admin/api/rebate-rules',
+        main_div:''
       }
     },
     components: {
@@ -143,6 +174,13 @@
         .then(function (res) {
           _self.tableDatas = res.data.data   //分页数据
         })
+
+        _self.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).format("yyyy-MM-dd")
+        var date = new Date();
+        var day = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
+        _self.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).format("yyyy-MM-dd")
+        console.info("_self.date: "+ _self.date)
+        console.info("_self.end_date: "+ _self.end_date)
     },
     methods: {
       searchBalance: _.debounce(function () {
@@ -160,8 +198,10 @@
       showDia(){
         if (this.charges_show == true) {
           this.charges_show = false
+          this.main_div = ''
         } else {
           this.charges_show = true
+          this.main_div = 'no-scroll'
         }
       }
     }
@@ -170,6 +210,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .no-scroll{
+     overflow:hidden; 
+  }
   .bg {
     background-color: #b9b49a;
     border-radius: 0.5rem;
@@ -233,12 +276,14 @@
     background-color: #0000007F;
     padding: 1rem;
     z-index: 10;
+    overflow-y:scroll;  
+    overflow-x:hidden; 
     /*display: none;*/
   }
 
   .charges-dialog-inner {
     width: 100%;
-    height: 100%;
+    height: 90%;
     background-color: #f4f1e2;
     box-shadow: 0rem 0rem 0rem 0rem rgba(0, 0, 0, 0.1);
     border-radius: 1rem;

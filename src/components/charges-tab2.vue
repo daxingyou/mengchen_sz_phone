@@ -1,13 +1,20 @@
 <template>
     <div >
         <div>
-            <date-picker
-                class="m-sel"
-                field="myDate"
-                placeholder="选择日期"
-                v-model="date"
-                format="yyyy-mm"
-                @input="searchBalance"></date-picker>
+      开始日期：<date-picker
+        class="m-sel"
+        field="myDate"
+        placeholder="选择日期"
+        v-model="date"
+        format="yyyy-mm-dd"
+        @input="searchBalance"></date-picker>
+      结束日期：<date-picker
+        class="m-sel"
+        field="myDate"
+        placeholder="选择日期"
+        v-model="end_date"
+        format="yyyy-mm-dd"
+        @input="searchBalance"></date-picker>
         </div>
 
         <div style="margin-top: 0.5rem">
@@ -85,11 +92,33 @@
     import {swiper, swiperSlide} from 'vue-awesome-swiper'
     import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
 
+  Date.prototype.format = function(fmt) { 
+      var o = { 
+          "M+" : this.getMonth()+1,                 //月份 
+          "d+" : this.getDate(),                    //日 
+          "h+" : this.getHours(),                   //小时 
+          "m+" : this.getMinutes(),                 //分 
+          "s+" : this.getSeconds(),                 //秒 
+          "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+          "S"  : this.getMilliseconds()             //毫秒 
+      }; 
+      if(/(y+)/.test(fmt)) {
+              fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+      }
+      for(var k in o) {
+          if(new RegExp("("+ k +")").test(fmt)){
+              fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+          }
+      }
+      return fmt; 
+  }
+
 
 export default {
   data () {
     return {
-      date:'',
+      date: '',
+      end_date: '',
       charges_show:false,
       allLoaded: false,
       page: 1,
@@ -107,6 +136,12 @@ export default {
   },
   components:{
     'date-picker': myDatepicker
+  },
+  created: function () {
+        this.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).format("yyyy-MM-dd")
+        var date = new Date();
+        var day = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
+        this.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).format("yyyy-MM-dd")
   },
     methods: {
       searchBalance: _.debounce(function () {

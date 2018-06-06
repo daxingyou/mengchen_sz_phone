@@ -65,7 +65,7 @@
             <div align="center" class="charges-dialog-inner">
                 <p class="d-title" align="center">使用微信刷码支付</p>
 
-                <img style="margin-top:1rem" :src=ercode ></img>
+                <img style="margin-top:1rem" :src=ercode />
             </div>
 
             <div v-on:click=showNewDia() class="close">
