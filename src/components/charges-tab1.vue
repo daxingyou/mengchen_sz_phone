@@ -210,6 +210,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
   .no-scroll{
      overflow:hidden; 
   }
@@ -268,7 +269,7 @@
   }
 
   .charges-dialog {
-    position: fixed;
+    position: absolute;
     top: 4rem;
     left: 0px;
     width: 100%;
