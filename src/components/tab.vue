@@ -89,7 +89,7 @@ export default {
             this.tab3 = 'nav-item nav-link nav-margin-left'
             this.tab4 = 'nav-item nav-link nav-margin-left active'
 
-          window.location.href = '/#/user/tab1'   //跳转到代理/个人-代理管理
+          window.location.href = '/#/user/tab2'   //跳转到代理/个人-代理管理
         }
     }
   }

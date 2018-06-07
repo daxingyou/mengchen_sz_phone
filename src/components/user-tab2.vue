@@ -133,7 +133,7 @@ export default {
             myTools.axiosInstance.get('/api/info')
             .then(function (response) {
                 if (response.status === 200) {
-                    console.info(response.data)
+                    //console.info(response.data)
                     var data = response.data
                     _this.userinfo.id = data.id
                     _this.userinfo.account = data.account
@@ -151,7 +151,7 @@ export default {
             })
         },
         filterInventorys(inventorys){
-            console.info(JSON.stringify(inventorys))
+            //console.info(JSON.stringify(inventorys))
             var invent = 0
             if(inventorys.length > 0){
                 for(var i=0;i <= inventorys.length;i++){

@@ -1,7 +1,7 @@
 <template>
     <div style="padding-left: 1rem;padding-right: 1rem">
-        <div style="padding-top: 20px;">
-            <div class="btn-group" role="group" >
+        <div style="padding-top: 20px;" v-if="! isHuangJinAgent">
+            <div class="btn-group" role="group">
                 <button v-on:click="to('/user/tab1')" type="button" :class=tab1 ><span class="tab-name">代理管理</span></button>
                 <button v-on:click="to('/user/tab2')" type="button" :class=tab2><span class="tab-name">个人中心</span></button>
             </div>
@@ -15,16 +15,32 @@
 </template>
 
 <script>
+    import {myTools} from '../tools/myTools.js'
 export default {
 //  name: 'pay',
   data () {
     return {
         tab1: 'btn btn-secondary active',
         tab2: 'btn btn-secondary',
+      isHuangJinAgent: true,
+      agentInfoApi: '/api/info',
+      currentAgentInfo: null,
     }
   },
     created: function () {
-        this.$router.push("/user/tab1")
+        let _self = this
+      myTools.axiosInstance.get(this.agentInfoApi)
+        .then(function (res) {
+          _self.currentAgentInfo = res.data
+          if (_self.currentAgentInfo.group_id >= 4) {
+            _self.isHuangJinAgent = true
+            console.log('hj', _self.isHuangJinAgent)
+            _self.$router.push("/user/tab2")
+          } else {
+            _self.isHuangJinAgent = false
+            _self.$router.push("/user/tab1")
+          }
+        })
     },
     watch: {
         "$route": "routeDate"
