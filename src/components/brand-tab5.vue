@@ -45,7 +45,7 @@
 
         <div class="normal">游戏ID</div>
         <div>
-          <input class="m-input" v-model="createCommunityFormData.gameId"/>
+          <input class="m-input" v-model="createCommunityFormData.owner_player_id"/>
         </div>
 
         <div class="normal">牌艺馆名称</div>
@@ -60,7 +60,7 @@
 
 
         <div style="margin-top: 1rem;">
-          <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn"><span>提交</span></div>
+          <div style="margin: 0 auto;margin-top: 0.5rem" class="pay-btn" @click="store()"><span>提交</span></div>
         </div>
       </div>
 
@@ -76,6 +76,8 @@
   import {myTools} from '../tools/myTools.js'
   import 'swiper/dist/css/swiper.css'
   import {swiper, swiperSlide} from 'vue-awesome-swiper'
+  import qs from 'qs'
+
   export default {
     data () {
       return {
@@ -90,7 +92,7 @@
         communityData:{},
         tableUrl: '/agent/api/community',
         createCommunityFormData: {
-          gameId: '',
+          owner_player_id: '',
           name: '',
           info: '',
         },
@@ -100,6 +102,23 @@
       this.list()
     },
     methods: {
+      store (){
+        let _self = this
+        myTools.axiosInstance.post(this.tableUrl, qs.stringify(this.createCommunityFormData))
+          .then(function (response) {
+            if (response.status === 422) {
+              alert(JSON.stringify(response.data))
+            } else {
+              //console.info(response)
+              alert(response.data.message)
+              _self.showNewDia()
+              _self.list()
+            }
+          })
+          .catch(function (err) {
+            alert(err)
+          })
+      },
       jumpCommunityInfo(community){
         this.$router.push({
           name : 'brandtab1',
