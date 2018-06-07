@@ -71,6 +71,9 @@ export default {
         }
 
         _self.currentAgentInfo = res.data
+        _self.$root.eventHub.$emit('main:agent-group-id', { //代理商级别
+          group_id: _self.currentAgentInfo.group_id,
+        })
 
         if (_self.currentAgentInfo.inventorys.length > 0) {
           for (let inventory of _self.currentAgentInfo.inventorys) {

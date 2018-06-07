@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <div class="d-flex justify-content-between">
       <div v-on:click=showNewDia() class="pay-btn"><span>新建子代理商</span></div>
       <div><input class="m-input"/></div>
@@ -185,7 +185,7 @@
           amount: ''
         },
         page: 1,
-        mTableData: mTableData
+        mTableData: mTableData,
       }
     },
     created: function () {
@@ -204,8 +204,8 @@
               for (var i = 0; i < data.length; i++) {
                 mTableData.push(data[i])
               }
-              console.info("this.mTableData")
-              console.info(mTableData)
+              //console.info("this.mTableData")
+              //console.info(mTableData)
               if (data.length == 0) {
                 _this.allLoaded = true
                 _this.$refs.loadmore.onBottomLoaded()
@@ -223,13 +223,13 @@
       create() {
         var _this = this;
         this.createFormData.password_confirmation = this.createFormData.password
-        console.info(this.createFormData)
+        //console.info(this.createFormData)
         myTools.axiosInstance.post('/agent/api/subagent', qs.stringify(this.createFormData))
           .then(function (response) {
             if (response.status === 422) {
               alert(JSON.stringify(response.data))
             } else {
-              console.info(response)
+              //console.info(response)
               alert(response.data.message)
               _this.showNewDia()
               //_this.list() //TODO 这里报错
@@ -244,7 +244,7 @@
         myTools.axiosInstance.post('/agent/api/subagent/' + this.changeFormData.id, qs.stringify(this.changeFormData))
           .then(function (response) {
             if (response.status === 200) {
-              console.info(response)
+              //console.info(response)
               _this.showChangeDia(0)
             } else {
               alert(JSON.stringify(response.data.data))
@@ -257,7 +257,7 @@
       pay() {
         var _this = this;
         let r = confirm("是否给玩家（ID:"+this.payFormData.account+"）充值"+this.payFormData.amount+"张房卡？")
-        console.log("r="+r)
+        //console.log("r="+r)
         if (r==true){
 
           myTools.axiosInstance.post('/agent/api/top-up/child/' + this.payFormData.account + '/1/' + this.payFormData.amount + '', qs.stringify(this.payFormData))
@@ -339,7 +339,7 @@
         }
       },
       filterInventorys(inventorys){
-        console.info(JSON.stringify(inventorys))
+        //console.info(JSON.stringify(inventorys))
         var invent = 0
         if (inventorys.length > 0) {
           for (var i = 0; i <= inventorys.length; i++) {
