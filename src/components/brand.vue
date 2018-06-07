@@ -21,18 +21,18 @@ export default {
 
     data () {
         return {
-            tab1: 'btn btn-secondary active',
+            tab1: 'btn btn-secondary',
             tab2: 'btn btn-secondary',
             tab3: 'btn btn-secondary',
             tab4: 'btn btn-secondary',
-
-          communityDetail: null,
+            tab5: 'btn btn-secondary',
+            communityDetail: null,
         }
     },
     created: function () {
       let _self = this
 
-      this.$router.push("/brand/tab1")
+      this.$router.push("/brand/tab5")
 
       this.$root.eventHub.$on('brandtab:community-change', function (data) {
         _self.communityDetail = data
@@ -50,22 +50,32 @@ export default {
                 this.tab1 = 'btn btn-secondary active'
                 this.tab2 = 'btn btn-secondary'
                 this.tab3 = 'btn btn-secondary'
-                this.tab4 = 'btn btn-secondary'
+                this.tab4 = 'btn btn-secondary'                
+                this.tab5 = 'btn btn-secondary'
             }else if("/brand/tab2" === to.path){
                 this.tab1 = 'btn btn-secondary'
                 this.tab2 = 'btn btn-secondary active'
                 this.tab3 = 'btn btn-secondary'
                 this.tab4 = 'btn btn-secondary'
+                this.tab5 = 'btn btn-secondary'
             }else if("/brand/tab3" === to.path){
                 this.tab1 = 'btn btn-secondary'
                 this.tab2 = 'btn btn-secondary'
                 this.tab3 = 'btn btn-secondary active'
                 this.tab4 = 'btn btn-secondary'
+                this.tab5 = 'btn btn-secondary'
             }else if("/brand/tab4" === to.path){
                 this.tab1 = 'btn btn-secondary'
                 this.tab2 = 'btn btn-secondary'
                 this.tab3 = 'btn btn-secondary'
                 this.tab4 = 'btn btn-secondary active'
+                this.tab5 = 'btn btn-secondary'
+            }else if("/brand/tab5" === to.path){
+                this.tab1 = 'btn btn-secondary'
+                this.tab2 = 'btn btn-secondary'
+                this.tab3 = 'btn btn-secondary'
+                this.tab4 = 'btn btn-secondary'
+                this.tab5 = 'btn btn-secondary active'
             }
         },
         to(path){

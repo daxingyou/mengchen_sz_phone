@@ -5,7 +5,7 @@ let myTools = {
   axiosInstance: axios.create({
     //baseURL: 'http://local.mengchen-sz.cn',
     //baseURL: 'http://mengchen_sz.work',
-    baseURL: 'http://hzhtnew-test.max78.com',
+    baseURL: 'http://hzhtnew-phone-test.max78.com',
     //baseURL: 'http://hzhtnew.max78.com',
     timeout: 10000,                          //超时时间
     xsrfCookieName: 'XSRF-TOKEN',

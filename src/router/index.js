@@ -16,6 +16,7 @@ import brandtab1 from '@/components/brand-tab1'
 import brandtab2 from '@/components/brand-tab2'
 import brandtab3 from '@/components/brand-tab3'
 import brandtab4 from '@/components/brand-tab4'
+import brandtab5 from '@/components/brand-tab5'
 import userTab1 from '@/components/user-tab1'
 import userTab2 from '@/components/user-tab2'
 
@@ -93,6 +94,11 @@ export default new Router({
                     path: '/brand/tab4',
                   name: 'brandtab4',
                     component: brandtab4
+                },
+                {
+                    path: '/brand/tab5',
+                  name: 'brandtab5',
+                    component: brandtab5
                 }
             ]
         },
