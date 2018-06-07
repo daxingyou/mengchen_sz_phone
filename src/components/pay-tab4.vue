@@ -16,13 +16,13 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th>ID</th>
-            <th width="140px">订单说明</th>
-            <th width="80px">订单状态</th>
-            <th width="80px">发货状态</th>
-            <th>创建时间</th>
-            <th>支付时间</th>
-            <th width="40px">操作</th>
+            <th v-on:click="wechat_sort('id')">ID</th>
+            <th v-on:click="wechat_sort('body')" width="140px" >订单说明</th>
+            <th v-on:click="wechat_sort('order_status_name')" width="80px" >订单状态</th>
+            <th v-on:click="wechat_sort('item_delivery_status_name')" width="80px">发货状态</th>
+            <th v-on:click="wechat_sort('created_at')" >创建时间</th>
+            <th v-on:click="wechat_sort('paid_at')" >支付时间</th>
+            <th  width="40px">操作</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -49,9 +49,9 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th>玩家id</th>
-            <th>充值房卡数</th>
-            <th>充值时间</th>
+            <th v-on:click="player_sort('player')" >玩家id</th>
+            <th v-on:click="player_sort('amount')">充值房卡数</th>
+            <th v-on:click="player_sort('created_at')">充值时间</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -75,10 +75,10 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th>id</th>
-            <th>牌艺馆id</th>
-            <th>充值房卡数</th>
-            <th>充值时间</th>
+            <th v-on:click="community_sort('id')">id</th>
+            <th v-on:click="community_sort('community_id')">牌艺馆id</th>
+            <th v-on:click="community_sort('item_amount')">充值房卡数</th>
+            <th v-on:click="community_sort('created_at')">充值时间</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -103,10 +103,10 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th>id</th>
-            <th>子代理商</th>
-            <th>充值房卡数</th>
-            <th>充值时间</th>
+            <th v-on:click="agent_sort('id')">id</th>
+            <th v-on:click="agent_sort('receiver')">子代理商</th>
+            <th v-on:click="agent_sort('amount')">充值房卡数</th>
+            <th v-on:click="agent_sort('created_at')">充值时间</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -173,6 +173,14 @@
           community:false,
           agent:false,
         },
+        wechat_sort_name:'',
+        wechat_sort_type:'',
+        player_sort_name:'',
+        player_sort_type:'',
+        community_sort_name:'',
+        community_sort_type:'',
+        agent_sort_name:'',
+        agent_sort_type:'',
       }
     },
     methods: {
@@ -246,7 +254,7 @@
       loadBottom() {
         console.log('loadBottom')
         let _self = this
-        myTools.axiosInstance.get(this.wxOrdersApi)
+        myTools.axiosInstance.get(this.wxOrdersApi )
           .then(function (res) {
             let data = res.data.data   //分页数据
             _self.loading = false
@@ -284,7 +292,50 @@
           })
         console.log(this.tableDatas)
       },
+      wechat_sort(name){
+        this.wechat_sort_name = name
+        if(this.wechat_sort_type == "desc" ){
+          this.wechat_sort_type = "asc"
+        }else{
+          this.wechat_sort_type = "desc" 
+        }
+        console.info(this.wechat_sort_name+"%7" + this.wechat_sort_type )
 
+        this.tableAxios(this.wxOrdersApi +"?sort=" + this.wechat_sort_name+"%7C" + this.wechat_sort_type)
+      },
+      player_sort(name){
+        this.player_sort_name = name
+        if(this.player_sort_type == "desc" ){
+          this.player_sort_type = "asc"
+        }else{
+          this.player_sort_type = "desc" 
+        }
+        console.info(this.player_sort_name+"%7" + this.player_sort_type )
+
+        this.tableAxios(this.playerRecordApi +"?sort=" + this.player_sort_name+"%7C" + this.player_sort_type)
+      },
+      community_sort(name){
+        this.community_sort_name = name
+        if(this.community_sort_type == "desc" ){
+          this.community_sort_type = "asc"
+        }else{
+          this.community_sort_type = "desc" 
+        }
+        console.info(this.community_sort_name+"%7" + this.community_sort_type )
+
+        this.tableAxios(this.communityRecordApi +"&sort=" + this.community_sort_name+"%7C" + this.community_sort_type)
+      },
+      agent_sort(name){
+        this.agent_sort_name = name
+        if(this.agent_sort_type == "desc" ){
+          this.agent_sort_type = "asc"
+        }else{
+          this.agent_sort_type = "desc" 
+        }
+        console.info(this.agent_sort_name+"%7" + this.agent_sort_type )
+
+        this.tableAxios(this.agentRecordApi +"?sort=" + this.agent_sort_name+"%7C" + this.agent_sort_type)
+      }
     },
     created () {
       let _self = this
@@ -297,7 +348,7 @@
           }
           _self.currentAgentInfo = res.data
         })
-    },
+    }
   }
 </script>
 
