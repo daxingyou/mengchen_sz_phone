@@ -2,14 +2,13 @@
 <div style="min-height: 30rem;height: 100%">
 
     <div class="d-flex justify-content-between">
-        <div v-on:click=showNewDia() class="pay-btn"><span>创建牌艺馆</span></div>
+        <div v-on:click=showNewDia() class="create-btn"><span>创建牌艺馆</span></div>
+        <div>
+            <select class="m1-sel"  >
+                <option >1</option>
+            </select>
+        </div>
     </div>
-    <div>
-        <select class="m-sel"  >
-            <option >1</option>
-        </select>
-    </div>
-
 
     <mt-loadmore bottomPullText="上拉加载更多" :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
                 :bottom-all-loaded="allLoaded" ref="loadmore">
@@ -109,6 +108,7 @@
         },
         methods: {
             showNewDia(){
+                console.info("showNewDia")
                 if(this.create_show == true){
                     this.create_show = false
                 }else{
@@ -174,11 +174,10 @@
         letter-spacing: 0rem;
         color: #fe3d23;
     }
-    .m-sel{
+    .m1-sel{
         height: 2rem;
-        width: 100%;
+        width: 8rem;
         border: 0px;
-        margin-top: 0.5rem;
         background-color: #ffffff;
         border-radius: 0.3rem;
     }
@@ -210,7 +209,6 @@
         height: 100%;
         background-color:#0000007F;
         padding: 1rem;
-        display: none;
     }
     .charges-dialog-inner{
         width: 100%;
@@ -218,6 +216,7 @@
         background-color: #f4f1e2;
         box-shadow: 0rem 0rem 0rem 0rem rgba(0, 0, 0, 0.1);
         border-radius: 1rem;
+        padding: 1rem;
     }
     .close{
         position: absolute;
@@ -261,6 +260,20 @@
         font-stretch: normal;
         letter-spacing: 0rem;
         color: #fffffe;
+    }
+    .create-btn{
+        height: 2rem;
+        width: 8rem;
+        background-color: #41af11;
+        border-radius: 0.5rem;
+        font-family: MicrosoftYaHei-Bold;
+        font-size: 1rem;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 2rem;
+        letter-spacing: 0rem;
+        color: #ffffff;
+        text-align: center;
     }
     .pay-btn{
         height: 3rem;
