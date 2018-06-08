@@ -52,7 +52,7 @@
                 玩家ID:
             </div>
             <div class="value" style="text-align: left;width: 10rem">
-                {{ communityDetail.owner_agent_id }}
+                {{ communityDetail.owner_player_id }}
             </div>
         </div>
 
