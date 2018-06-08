@@ -63,7 +63,7 @@
 
 
             <div align="center" class="charges-dialog-inner">
-                <p class="d-title" align="center">使用微信刷码支付</p>
+                <p class="d-title" align="center">使用微信扫码支付</p>
 
                 <img style="margin-top:1rem" :src=ercode />
             </div>

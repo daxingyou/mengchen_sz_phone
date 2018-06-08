@@ -14,9 +14,9 @@
 
         <div style="padding-top: 20px;">
             <div class="btn-group" role="group" >
-                <button  type="button" class="btn btn-secondary" ><span class="tab-name active" @click="tabSwitch('member')">成员列表</span></button>
-                <button  type="button" class="btn btn-secondary"><span class="tab-name" @click="tabSwitch('application')">请求列表</span></button>
-                <button  type="button" class="btn btn-secondary"><span class="tab-name" @click="tabSwitch('log')">牌艺馆动态</span></button>
+                <button  type="button" class="btn btn-secondary" ><span :class="sel=='member'?'tab-name active':'tab-name'" @click="tabSwitch('member')">成员列表</span></button>
+                <button  type="button" class="btn btn-secondary"><span :class="sel=='application'?'tab-name active':'tab-name'" @click="tabSwitch('application')">请求列表</span></button>
+                <button  type="button" class="btn btn-secondary"><span :class="sel=='log'?'tab-name active':'tab-name'" @click="tabSwitch('log')">牌艺馆动态</span></button>
             </div>
         </div>
 
@@ -124,8 +124,8 @@
     export default {
         data () {
             return {
-                brand_show:false,
-
+              brand_show:false,
+              sel:'member',
               selectedCommunityId: '',  //已选中的牌艺馆id
               communityDetail: null,
               communitiesIdsApi: '/agent/api/communities',   //获取牌艺馆列表接口
@@ -271,6 +271,7 @@
                   'application': false, //请求列表
                   'log': false, //牌艺馆动态
                 }
+                this.sel = 'member'
                 break
               case 'application':
                 this.tabSwitchShow = {
@@ -278,6 +279,7 @@
                   'application': true, //请求列表
                   'log': false, //牌艺馆动态
                 }
+                this.sel = 'application'
                 break
               case 'log':
                 this.tabSwitchShow = {
@@ -285,6 +287,7 @@
                   'application': false, //请求列表
                   'log': true, //牌艺馆动态
                 }
+                this.sel = 'log'
                 break
             }
           },

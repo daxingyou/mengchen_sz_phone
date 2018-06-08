@@ -40,6 +40,17 @@
     import qs from 'qs'
     import _ from 'lodash'
 
+    window.confirm = function (message) {
+            var iframe = document.createElement("IFRAME");
+            iframe.style.display = "none";
+            iframe.setAttribute("src", 'data:text/plain,');
+            document.documentElement.appendChild(iframe);
+            var alertFrame = window.frames[0];
+            var result = alertFrame.window.confirm(message);
+            iframe.parentNode.removeChild(iframe);
+            return result;
+    };
+
 export default {
 //  name: 'pay',
   data () {
@@ -83,6 +94,13 @@ export default {
       }
       let _self = this
       let api = `${this.topUpApiPrefix}/${this.formData.player_id}/${this.formData.type_id}/${this.formData.pay_num}`
+
+        if(this.formData.player_id.length !== 6){
+            this.playerBalanceMsg = "玩家不存在"
+            return;
+        }else{
+            this.playerBalanceMsg = ''
+        }
 
 
         let r = confirm("是否给玩家（ID:"+this.formData.player_id+"）充值"+this.formData.pay_num+"张房卡？")

@@ -59,9 +59,13 @@ export default {
   watch: {
     "$route": "routeDate"
   },
+  mounted(){
+    // console.info(this.$router)
+  },
   methods: {
     routeDate(to, from)
     {
+        console.info("to："+to)
         if("/main/tab1" === to.path){
             this.tab1 = 'nav-item nav-link active'
             this.tab2 = 'nav-item nav-link nav-margin-left'

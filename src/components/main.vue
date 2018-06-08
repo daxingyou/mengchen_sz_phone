@@ -43,6 +43,10 @@ export default {
       inventoryCard: 0,
     }
   },
+  mounted(){
+    console.info("pay-----------")
+    this.$router.push("/pay/tab1")
+  },
   methods:{
     logout(){
       myTools.axiosInstance.post('/logout')
@@ -58,7 +62,8 @@ export default {
         })
     },
     jump2PayPage () {
-      window.location.href = '/#/pay/tab1'   //跳转到充值中心-自助充值
+      this.$router.push('/pay/tab1')
+      // window.location.href = '/#/pay/tab1'   //跳转到充值中心-自助充值
     },
   },
   created: function () {

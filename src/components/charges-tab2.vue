@@ -1,20 +1,23 @@
 <template>
     <div >
         <div>
-      开始日期：<date-picker
-        class="m-sel"
-        field="myDate"
-        placeholder="选择日期"
-        v-model="date"
-        format="yyyy-mm-dd"
-        @input="searchBalance"></date-picker>
-      结束日期：<date-picker
-        class="m-sel"
-        field="myDate"
-        placeholder="选择日期"
-        v-model="end_date"
-        format="yyyy-mm-dd"
-        @input="searchBalance"></date-picker>
+      <div>开始日期：<el-date-picker
+      @input="searchBalance"
+      class="m-sel"
+      v-model="date"
+      type="date"
+      placeholder="选择日期">
+      </el-date-picker>
+      </div>
+      <br/>
+      <div>结束日期：<el-date-picker
+      @input="searchBalance"
+      class="m-sel"
+      v-model="end_date"
+      type="date"
+      placeholder="选择日期">
+      </el-date-picker>
+      </div>
         </div>
 
         <div style="margin-top: 0.5rem">

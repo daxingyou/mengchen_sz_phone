@@ -7,16 +7,19 @@
     <!--todo 时间选择器报错-->
     <div align="left">
       <span class="normal">时间</span>
-      <date-picker field="myDate"
-                   placeholder="选择日期"
-                   v-model="searchRecordForm.start_time"
-                   format="yyyy-mm-dd"></date-picker>
+      <el-date-picker
+      class="m-sel"
+      v-model="searchRecordForm.start_time"
+      type="date"
+      placeholder="选择日期">
+      </el-date-picker>
       <span class="normal">至</span>
-      <date-picker field="myDate"
-                   placeholder="选择日期"
-                   v-model="searchRecordForm.end_time"
-                   @input="searchRecord"
-                   format="yyyy-mm-dd"></date-picker>
+      <el-date-picker
+      class="m-sel"
+      v-model="searchRecordForm.end_time"
+      type="date"
+      placeholder="选择日期">
+      </el-date-picker>
     </div>
     <div align="left" style="margin-left: 2rem;margin-top: 0.5rem;">
       <a href="#" @click="changeSearchRecordDate('today')">今天</a>&nbsp;&nbsp;&nbsp;

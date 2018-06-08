@@ -42,6 +42,17 @@
     import {myTools} from '../tools/myTools.js'
     import qs from 'qs'
 
+    window.confirm = function (message) {
+            var iframe = document.createElement("IFRAME");
+            iframe.style.display = "none";
+            iframe.setAttribute("src", 'data:text/plain,');
+            document.documentElement.appendChild(iframe);
+            var alertFrame = window.frames[0];
+            var result = alertFrame.window.confirm(message);
+            iframe.parentNode.removeChild(iframe);
+            return result;
+    };
+
     export default {
         data () {
             return {

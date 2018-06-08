@@ -16,13 +16,13 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th v-on:click="wechat_sort('id')">ID</th>
-            <th v-on:click="wechat_sort('body')" width="140px" >订单说明</th>
-            <th v-on:click="wechat_sort('order_status_name')" width="80px" >订单状态</th>
-            <th v-on:click="wechat_sort('item_delivery_status_name')" width="80px">发货状态</th>
-            <th v-on:click="wechat_sort('created_at')" >创建时间</th>
-            <th v-on:click="wechat_sort('paid_at')" >支付时间</th>
-            <th  width="40px">操作</th>
+            <th v-on:click="wechat_sort('id')" :class="wechat_sort_name=='id'?'sort_active':''" >ID</th>
+            <th v-on:click="wechat_sort('body')" :class="wechat_sort_name=='body'?'sort_active':''" width="140px" >订单说明</th>
+            <th v-on:click="wechat_sort('order_status_name')" :class="wechat_sort_name=='order_status_name'?'sort_active':''" width="80px" >订单状态</th>
+            <th v-on:click="wechat_sort('item_delivery_status_name')" :class="wechat_sort_name=='item_delivery_status_name'?'sort_active':''" width="80px">发货状态</th>
+            <th v-on:click="wechat_sort('created_at')" :class="wechat_sort_name=='created_at'?'sort_active':''" width="80px">创建时间</th>
+            <th v-on:click="wechat_sort('paid_at')" :class="wechat_sort_name=='paid_at'?'sort_active':''" width="80px">支付时间</th>
+            <th  width="60px">操作</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -49,9 +49,9 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th v-on:click="player_sort('player')" >玩家id</th>
-            <th v-on:click="player_sort('amount')">充值房卡数</th>
-            <th v-on:click="player_sort('created_at')">充值时间</th>
+            <th :class="player_sort_name=='player'?'sort_active':''" v-on:click="player_sort('player')" >玩家id</th>
+            <th :class="player_sort_name=='amount'?'sort_active':''" v-on:click="player_sort('amount')">充值房卡数</th>
+            <th :class="player_sort_name=='created_at'?'sort_active':''" v-on:click="player_sort('created_at')">充值时间</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -75,10 +75,10 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th v-on:click="community_sort('id')">id</th>
-            <th v-on:click="community_sort('community_id')">牌艺馆id</th>
-            <th v-on:click="community_sort('item_amount')">充值房卡数</th>
-            <th v-on:click="community_sort('created_at')">充值时间</th>
+            <th :class="community_sort_name=='id'?'sort_active':''" v-on:click="community_sort('id')">id</th>
+            <th :class="community_sort_name=='community_id'?'sort_active':''" v-on:click="community_sort('community_id')">牌艺馆id</th>
+            <th :class="community_sort_name=='item_amount'?'sort_active':''" v-on:click="community_sort('item_amount')">充值房卡数</th>
+            <th :class="community_sort_name=='created_at'?'sort_active':''" v-on:click="community_sort('created_at')">充值时间</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -103,10 +103,10 @@
         <table width="91%" style="margin-left: 1.1rem">
           <thead style="background-color: #fffffe;">
           <tr>
-            <th v-on:click="agent_sort('id')">id</th>
-            <th v-on:click="agent_sort('receiver')">子代理商</th>
-            <th v-on:click="agent_sort('amount')">充值房卡数</th>
-            <th v-on:click="agent_sort('created_at')">充值时间</th>
+            <th :class="agent_sort_name=='id'?'sort_active':''" v-on:click="agent_sort('id')">id</th>
+            <th :class="agent_sort_name=='receiver'?'sort_active':''" v-on:click="agent_sort('receiver')">子代理商</th>
+            <th :class="agent_sort_name=='amount'?'sort_active':''" v-on:click="agent_sort('amount')">充值房卡数</th>
+            <th :class="agent_sort_name=='created_at'?'sort_active':''" v-on:click="agent_sort('created_at')">充值时间</th>
           </tr>
           </thead>
           <tbody v-if="loading === false">
@@ -126,8 +126,8 @@
     <div v-show="pay_dia_show" class="charges-dialog">
 
       <div align="center" class="charges-dialog-inner">
-        <p class="d-title" align="center">使用微信刷码支付</p>
-        <img :src=ercode style="margin-top:1rem"/>
+        <p class="d-title" align="center">使用微信扫码支付</p>
+        <img height="200" width="200" :src=ercode style="margin-top:1rem"/>
       </div>
 
       <div v-on:click=showNewDia() class="close">
@@ -181,6 +181,7 @@
         community_sort_type:'',
         agent_sort_name:'',
         agent_sort_type:'',
+
       }
     },
     methods: {
@@ -420,5 +421,8 @@
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
+  }
+  .sort_active{
+    color:rgb(255,0,0);
   }
 </style>

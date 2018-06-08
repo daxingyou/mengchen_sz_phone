@@ -37,8 +37,8 @@
 
     <div class="desc">
       <div style="font-family: MicrosoftYaHei;font-size: 1rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;font-weight:bold;">本游戏仅供娱乐，禁止赌博！</div>
-      <div style="font-family: MicrosoftYaHei;font-size: 0.5rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;">禁止利用本产品进行赌博行为</div>
-      <div style="font-family: MicrosoftYaHei;font-size: 0.5rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;">禁止捏造传播游戏外挂等信息</div>
+      <div style="font-family: MicrosoftYaHei;font-size: 1rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;">禁止利用本产品进行赌博行为</div>
+      <div style="font-family: MicrosoftYaHei;font-size: 1rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;">禁止捏造传播游戏外挂等信息</div>
       <div style="font-family: MicrosoftYaHei;font-size: 1rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;">禁止发布违规信息和违法言论</div>
       <div style="font-family: MicrosoftYaHei;font-size: 1rem;font-weight: normal;font-stretch: normal;line-height: 1.5rem;letter-spacing: 0rem;color: #ffffff;">发现抽水等赌博行为，请联系客服举报。</div>
     </div>
@@ -194,8 +194,6 @@ input{
 }
 
 .desc{
-  bottom:20px;
-  position:fixed;
-  width: 100%;
+  margin-top:10rem;
 }
 </style>

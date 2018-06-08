@@ -41,6 +41,10 @@ export default {
   watch: {
       "$route": "routeDate"
   },
+  mounted(){
+    console.info("pay-----------")
+    // this.$router.push("/pay/tab1")
+  },
   methods: {
       routeDate(to, from)
       {

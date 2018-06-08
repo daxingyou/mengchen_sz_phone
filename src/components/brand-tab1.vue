@@ -2,12 +2,10 @@
     <div>
 
         <div>
-            <select class="m-sel" v-model="selectedCommunityId" v-if="loading === false" @change="onCommunitySelect">
-                <option :value="community.id" v-for="community in communityList">{{community.id}} - {{community.name}}</option>
-            </select>
+              <el-select class="m-sel" v-model="selectedCommunityId" v-if="loading === false" @blur="onCommunitySelect"  @change="onCommunitySelect" placeholder="请选择">
+                <el-option :value="community.id" v-for="(community,key) in communityList">{{community.id}} - {{community.name}}</el-option>
+            </el-select>
         </div>
-
-
 
         <div style="margin-top: 0.5rem" class="d-flex justify-content-between">
 
@@ -151,6 +149,22 @@
             .then(function (res) {
               _self.communityList = res.data.communities
               _self.loading = false
+
+
+                if(_self.communityList.length > 0){
+                    let _self_ = _self
+
+                    _self.selectedCommunityId = _self.communityList[0].id
+                    myTools.axiosInstance.get(_self.communityDetailApiPrefix + _self.selectedCommunityId)
+                    .then(function (res) {
+                        _self_.communityDetail = res.data
+
+                        //向brand组件发送牌艺馆详细数据
+                        _self_.$root.eventHub.$emit('brandtab:community-change', _self_.communityDetail)
+                    })
+
+                }
+
             })
 
           //如果牌艺馆已经被选择
