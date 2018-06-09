@@ -143,15 +143,16 @@ export default {
     'date-picker': myDatepicker
   },
   created: function () {
-        this.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).nformat("yyyy-MM-dd")
-        var date = new Date();
-        var day = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
-        this.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).nformat("yyyy-MM-dd")
+//        this.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).nformat("yyyy-MM-dd")
+//        var date = new Date();
+//        var day = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
+//        this.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).nformat("yyyy-MM-dd")
   },
     methods: {
       searchBalance: _.debounce(function () {
         let _self = this
-        let url = this.withdrawListApi + '?date=' + this.date
+      if (this.date !== '' && this.end_date){
+        let url = this.withdrawListApi + '?date=' + this.date + '&end_time=' + this.end_date
 
         myTools.axiosInstance.get(url)
           .then(function (res) {
@@ -163,6 +164,8 @@ export default {
               _self.$refs.loadmore.onBottomLoaded()
             }
           })
+      }
+
       }, 800),
         showDia(){
             if(this.charges_show == true){

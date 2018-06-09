@@ -180,22 +180,23 @@
           _self.tableDatas = res.data.data   //分页数据
         })
 
-        _self.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).nformat("yyyy-MM-dd")
-        var newDate = new Date();
-        var day = new Date(newDate.getFullYear(), newDate.getMonth(), 0).getDate();
-        _self.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).nformat("yyyy-MM-dd")
-        console.info("_self.date: "+ _self.date)
-        console.info("_self.end_date: "+ _self.end_date)
+//        _self.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).nformat("yyyy-MM-dd")
+//        var newDate = new Date();
+//        var day = new Date(newDate.getFullYear(), newDate.getMonth(), 0).getDate();
+//        _self.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).nformat("yyyy-MM-dd")
+
     },
     methods: {
       searchBalance: _.debounce(function () {
         let _self = this
-        let url = this.tableUrl + '?date=' + this.date
+          if (this.date !== '' && this.end_date) {
 
-        myTools.axiosInstance.get(url)
-          .then(function (res) {
-            _self.tableDatas = res.data.data   //分页数据
-          })
+            let url = this.tableUrl + '?date=' + this.date + '&end_time=' + this.end_date
+            myTools.axiosInstance.get(url)
+              .then(function (res) {
+                _self.tableDatas = res.data.data   //分页数据
+              })
+          }
       }, 800),
       calcRebate(price, rate){
         return price * (rate / 100)
