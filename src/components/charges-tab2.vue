@@ -6,6 +6,7 @@
       class="m-sel"
       v-model="date"
       type="date"
+      value-format="yyyy-MM-dd"
       placeholder="选择日期">
       </el-date-picker>
       </div>
@@ -15,6 +16,7 @@
       class="m-sel"
       v-model="end_date"
       type="date"
+      value-format="yyyy-MM-dd"
       placeholder="选择日期">
       </el-date-picker>
       </div>
@@ -95,7 +97,7 @@
     import {swiper, swiperSlide} from 'vue-awesome-swiper'
     import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
 
-  Date.prototype.format = function(fmt) { 
+  Date.prototype.nformat = function(fmt) { 
       var o = { 
           "M+" : this.getMonth()+1,                 //月份 
           "d+" : this.getDate(),                    //日 
@@ -141,10 +143,10 @@ export default {
     'date-picker': myDatepicker
   },
   created: function () {
-        this.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).format("yyyy-MM-dd")
+        this.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).nformat("yyyy-MM-dd")
         var date = new Date();
         var day = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
-        this.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).format("yyyy-MM-dd")
+        this.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).nformat("yyyy-MM-dd")
   },
     methods: {
       searchBalance: _.debounce(function () {

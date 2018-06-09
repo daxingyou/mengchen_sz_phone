@@ -28,6 +28,7 @@
       class="m-sel"
       v-model="date"
       type="date"
+      value-format="yyyy-MM-dd"
       placeholder="选择日期">
       </el-date-picker>
       </div>
@@ -37,6 +38,7 @@
       class="m-sel"
       v-model="end_date"
       type="date"
+      value-format="yyyy-MM-dd"
       placeholder="选择日期">
       </el-date-picker>
       </div>
@@ -124,7 +126,7 @@
   import {myTools} from '../tools/myTools.js'
   import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
 
-  Date.prototype.format = function(fmt) { 
+  Date.prototype.nformat = function(fmt) { 
       var o = { 
           "M+" : this.getMonth()+1,                 //月份 
           "d+" : this.getDate(),                    //日 
@@ -178,10 +180,10 @@
           _self.tableDatas = res.data.data   //分页数据
         })
 
-        _self.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).format("yyyy-MM-dd")
-        var date = new Date();
-        var day = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
-        _self.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).format("yyyy-MM-dd")
+        _self.date = new Date(new Date().getFullYear(), new Date().getMonth()-1, 1).nformat("yyyy-MM-dd")
+        var newDate = new Date();
+        var day = new Date(newDate.getFullYear(), newDate.getMonth(), 0).getDate();
+        _self.end_date = new Date(new Date().getFullYear(), new Date().getMonth()-1, day).nformat("yyyy-MM-dd")
         console.info("_self.date: "+ _self.date)
         console.info("_self.end_date: "+ _self.end_date)
     },
